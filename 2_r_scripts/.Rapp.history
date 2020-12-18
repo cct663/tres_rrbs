@@ -1,0 +1,300 @@
+# Load libraries ----#
+    pacman::p_load("methylKit", "tidyverse", "here", "gridExtra", "ggpubr", "viridis")#
+#
+# Load data ----#
+    cov_list <- list.files(here("0_processed_data/bismark_cov_output"))#
+    d_bis <- read.delim(here("0_processed_data/bismark_sample_summary.txt"))#
+    d_sample <- read.delim(here("1_raw_data/rrbs_sample_metadata.txt"))#
+# Set colors ----#
+    cort_col <- "#56B4E9"#
+    cont_col <- "#E69F00"#
+    pre_col <- "#999999"
+install.packages("viridis")
+install.packages("methylKit")
+library(methylKit)
+# merge to file that has filename and sample id#
+        cov_l <- as.data.frame(cov_list)#
+        colnames(cov_l) <- "bis_processed_file"#
+        cov_l <- plyr::join(cov_l, d_sample, "bis_processed_file")#
+    # Create group labels#
+        d_sample$group_id <- paste(d_sample$group, d_sample$treatment, sep = "_")#
+        grps <- data.frame(group_id = c("1pre_cort", "1pre_control", "2post_cort", "2post_control", "3cross_control", "3cross_cort", "_"),#
+                           comp_grp = c("D", "A", "E", "B", "C", "F", "G"))#
+        d_sample <- plyr::join(d_sample, grps, "group_id")#
+        labels_t <- data.frame(treatment = c("cort", "control"), trt_label = c("Corticosterone", "Control"))#
+        d_sample <- plyr::join(d_sample, labels_t, "treatment")
+# Read into methylkit ----#
+    # Make the file list for comparison#
+        # Define which groups to include in comparison (needs to be two comparisons)#
+            sub_samples <- subset(d_sample, d_sample$comp_grp == "D" | d_sample$comp_grp == "E")#
+        # make a 1/0 coding for comparison groups#
+            ones <- data.frame(comp_grp = c("D", "E"), treat_code = c(0, 1))#
+            sub_samples <- plyr::join(sub_samples, ones, "comp_grp")#
+            #test_list <- as.list(c(file_list[[1]], file_list[[25]], file_list[[49]],#
+            #               file_list[[73]], file_list[[97]]))#
+            #test_cov_list <- c(cov_list[1], cov_list[25], cov_list[49], cov_list[73], cov_list[97])#
+    # Read into methylrawlist#
+          meth_list <- methRead(as.list(here("0_processed_data/bismark_cov_output", sub_samples$bis_processed_file)),#
+                                sample.id = as.list(sub_samples$sample_id),#
+                                assembly = "tres_20",#
+                                treatment = sub_samples$treat_code,#
+                                context = "CpG",#
+                                pipeline = "bismarkCoverage",#
+                                header = FALSE,#
+                                dbdir = here("4_other_output"),#
+                                mincov = 10)#
+          # dbtype = "tabix", # adding in this option loads data in chunks so memory doesn't run out...takes longer#
+# Descriptive stats of samples ----#
+        # Gives number of bases that fall into each bin of percent methylation#
+          # runs by sample. Could do as loop to make plots of all#
+            #getMethylationStats(meth_list[[5]], plot = TRUE)#
+        # Gives coverage per sample. Same as above.#
+            #getCoverageStats(meth_list[[5]], plot = TRUE)#
+    # Filters the list to exclude bases < x and > x coverage#
+        # greater than can be a problem because could be pcr bias#
+            f_meth_list <- filterByCoverage(meth_list, lo.count = 10, lo.perc = NULL,#
+                                            hi.count = NULL, hi.perc = 99.9)#
+    # Combine the whole methyllist together into one object#
+        # normalize coverage#
+            f_meth_list2 <- normalizeCoverage(f_meth_list)#
+        # Set min per group to be minimum number of samples per group with coverage#
+            meth <- methylKit::unite(f_meth_list2, destrand = FALSE, min.per.group = 15L)#
+    # Plot correlation in methylation between samples#
+          #getCorrelation(meth, plot = TRUE)#
+          #sink(here("5_temporary_files/meth_corr.txt"))#
+          #  getCorrelation(meth, plot = FALSE)#
+          #sink()#
+          xx <- cor(percMethylation(meth), use = "complete.obs")#
+    # Vector of methylation percentages by site#
+          pct <- as.matrix(percMethylation(meth))#
+          pc_cpg <- rep(NA, nrow(pct))#
+          for(i in 1:length(pc_cpg)){#
+            pc_cpg[i] <- mean(as.vector(pct[i, ]), na.rm = TRUE)#
+          }#
+# Create PCA plot ----#
+        #plot clustered dendrogram#
+          clusterSamples(meth, dist = "correlation", method = "ward", plot = TRUE)#
+        # PCA scree plot#
+          #PCASamples(meth, screeplot = TRUE)#
+          pc_meth <- PCASamples(meth, obj.return = TRUE)#
+          pc_dat <- as.data.frame(pc_meth$x[, 1:3])#
+          pc_dat$sample_id <- rownames(pc_dat)#
+          pc_dat <- plyr::join(pc_dat, sub_samples, "sample_id", "left", "first")
+#test_list <- as.list(c(file_list[[1]], file_list[[25]], file_list[[49]],#
+            #               file_list[[73]], file_list[[97]]))#
+            #test_cov_list <- c(cov_list[1], cov_list[25], cov_list[49], cov_list[73], cov_list[97])#
+    # Read into methylrawlist#
+          meth_list <- methRead(as.list(here("0_processed_data/bismark_cov_output", sub_samples$bis_processed_file)),#
+                                sample.id = as.list(sub_samples$sample_id),#
+                                assembly = "tres_20",#
+                                treatment = sub_samples$treat_code,#
+                                context = "CpG",#
+                                pipeline = "bismarkCoverage",#
+                                header = FALSE,#
+                                dbtype = "tabix",#
+                                dbdir = here("4_other_output"),#
+                                mincov = 10)#
+          # dbtype = "tabix", # adding in this option loads data in chunks so memory doesn't run out...takes longer#
+# Descriptive stats of samples ----#
+        # Gives number of bases that fall into each bin of percent methylation#
+          # runs by sample. Could do as loop to make plots of all#
+            #getMethylationStats(meth_list[[5]], plot = TRUE)#
+        # Gives coverage per sample. Same as above.#
+            #getCoverageStats(meth_list[[5]], plot = TRUE)#
+    # Filters the list to exclude bases < x and > x coverage#
+        # greater than can be a problem because could be pcr bias#
+            f_meth_list <- filterByCoverage(meth_list, lo.count = 10, lo.perc = NULL,#
+                                            hi.count = NULL, hi.perc = 99.9)#
+    # Combine the whole methyllist together into one object#
+        # normalize coverage#
+            f_meth_list2 <- normalizeCoverage(f_meth_list)#
+        # Set min per group to be minimum number of samples per group with coverage#
+            meth <- methylKit::unite(f_meth_list2, destrand = FALSE, min.per.group = 15L)
+# Plot correlation in methylation between samples#
+          #getCorrelation(meth, plot = TRUE)#
+          #sink(here("5_temporary_files/meth_corr.txt"))#
+          #  getCorrelation(meth, plot = FALSE)#
+          #sink()#
+          xx <- cor(percMethylation(meth), use = "complete.obs")#
+    # Vector of methylation percentages by site#
+          pct <- as.matrix(percMethylation(meth))#
+          pc_cpg <- rep(NA, nrow(pct))#
+          for(i in 1:length(pc_cpg)){#
+            pc_cpg[i] <- mean(as.vector(pct[i, ]), na.rm = TRUE)#
+          }#
+# Create PCA plot ----#
+        #plot clustered dendrogram#
+          clusterSamples(meth, dist = "correlation", method = "ward", plot = TRUE)#
+        # PCA scree plot#
+          #PCASamples(meth, screeplot = TRUE)#
+          pc_meth <- PCASamples(meth, obj.return = TRUE)#
+          pc_dat <- as.data.frame(pc_meth$x[, 1:3])#
+          pc_dat$sample_id <- rownames(pc_dat)#
+          pc_dat <- plyr::join(pc_dat, sub_samples, "sample_id", "left", "first")#
+          col1 <- pre_col#
+          col2 <- cort_col#
+          p1 <- ggplot(data = pc_dat, mapping = aes(x = PC1, y = PC2, fill = group_id, color = group_id)) +#
+            geom_point(pch = 21, size = 3, alpha = 0.7) + #
+            theme_bw() + stat_ellipse() + #
+            xlab("Methylation PC1") + ylab("Methylation PC2") +#
+            scale_fill_manual(values = c(col1, col2)) +#
+            scale_color_manual(values = c(col1, col2)) +#
+            guides(fill = FALSE, color = FALSE) +#
+            theme(legend.position = c(0.85, 0.9), legend.title = element_blank(), legend.background = element_blank())#
+          p2 <- ggplot(data = pc_dat, mapping = aes(x = PC1, y = PC3, fill = group_id, color = group_id)) +#
+            geom_point(pch = 21, size = 3, alpha = 0.7) + #
+            theme_bw() + stat_ellipse() + #
+            xlab("Methylation PC1") + ylab("Methylation PC3") +#
+            scale_fill_manual(values = c(col1, col2)) +#
+            scale_color_manual(values = c(col1, col2)) +#
+            guides(fill = FALSE, color = FALSE) +#
+            theme(legend.position = c(0.85, 0.9), legend.title = element_blank(), legend.background = element_blank())#
+          p3 <- ggplot(data = pc_dat, mapping = aes(x = PC2, y = PC3, fill = group_id, color = group_id)) +#
+            geom_point(pch = 21, size = 3, alpha = 0.7) + #
+            theme_bw() + stat_ellipse() + #
+            xlab("Methylation PC2") + ylab("Methylation PC3") +#
+            scale_fill_manual(values = c(col1, col2)) +#
+            scale_color_manual(values = c(col1, col2)) +#
+            theme(legend.position = c(0.7, 0.8), legend.title = element_blank(), legend.background = element_blank())#
+          pa <- ggarrange(p1, p2, p3, nrow = 1)#
+          pa2 <- annotate_figure(pa,#
+                          top = text_grob(""),#
+                          fig.lab = "Pre-Treatment Comparison Between Groups",#
+                          fig.lab.pos = "top.left")#
+          # width 10, height 3.6#
+# Finding differential CpGs ----#
+        # Can do same thing here but feed in tiling output      #
+          myDiff <- calculateDiffMeth(meth, covariates = as.data.frame(sub_samples[, c("min_age")]))#
+            # can also turn on overdispersion = "MN" here
+pa2
+theme(legend.position = c(0.7, 0.1), legend.title = element_blank(), legend.background = element_blank())
+pa <- ggarrange(p1, p2, p3, nrow = 1)#
+          pa2 <- annotate_figure(pa,#
+                          top = text_grob(""),#
+                          fig.lab = "Pre-Treatment Comparison Between Groups",#
+                          fig.lab.pos = "top.left")
+pa2
+p3 <- ggplot(data = pc_dat, mapping = aes(x = PC2, y = PC3, fill = group_id, color = group_id)) +#
+            geom_point(pch = 21, size = 3, alpha = 0.7) + #
+            theme_bw() + stat_ellipse() + #
+            xlab("Methylation PC2") + ylab("Methylation PC3") +#
+            scale_fill_manual(values = c(col1, col2)) +#
+            scale_color_manual(values = c(col1, col2)) +#
+            theme(legend.position = c(0.7, 0.1), legend.title = element_blank(), legend.background = element_blank())
+pa <- ggarrange(p1, p2, p3, nrow = 1)#
+          pa2 <- annotate_figure(pa,#
+                          top = text_grob(""),#
+                          fig.lab = "Pre-Treatment Comparison Between Groups",#
+                          fig.lab.pos = "top.left")#
+          # width 10, height 3.6
+pa2
+# save hyper methylated regions   (change to hypo for opposite)#
+          #diff25p_hyper <- getMethylDiff(myDiff, difference = 25, qvalue = 0.01, type = "hyper")#
+          #diff25p_hypo <- getMethylDiff(myDiff, difference = 25, qvalue = 0.01, type = "hypo")#
+        # Plot percent methylation#
+          md <- as.data.frame(myDiff)#
+          md$pct_meth <- pc_cpg#
+          p1 <- ggplot(data = md, mapping = aes(x = pc_cpg, y = -log10(qvalue))) + #
+            theme_classic() +#
+            xlab("Overall Percent Methylation at CpG") +#
+            geom_smooth(col = "coral3", fill = "slateblue") +#
+            ylab("Average -log10(q-value)")#
+          cnt <- paste("Total number of CpGs", nrow(md), sep = " ")#
+          p2 <- ggplot(data = md, mapping = aes(x = pc_cpg)) + theme_classic() +#
+            xlab("Overall Percent Methylation at CpG") +#
+            geom_histogram(fill = "coral3", color = "gray30", binwidth = 2.5) +#
+            ylab("Number of CpG Sites") + ggtitle(cnt)#
+          p3 <- ggplot(data = md, mapping = aes(x = pc_cpg, y = abs(meth.diff))) + #
+            theme_classic() +#
+            xlab("Overall Percent Methylation at CpG") +#
+            geom_smooth(col = "coral3", fill = "slateblue") +#
+            ylab("Abs(Group Difference in Methylation)")#
+          pb <- ggarrange(p1, p2, p3, nrow = 1)#
+        # Plot them, or turn off plot for text output #
+          diffMethPerChr(myDiff, plot = FALSE, qvalue.cutoff = 0.01, meth.cutoff = 25)#
+          p1 <- ggplot(data = myDiff, mapping = aes(x = qvalue)) +#
+            geom_histogram(fill = "coral3", binwidth = 0.01, color = "gray30") +#
+            theme_classic() + xlab("Difference q-value") +#
+            ylab("Number of CpG Sites")#
+          md2 <- getData(md)#
+          lt001 <- round(nrow(subset(md2, md2$qvalue < 0.0001)) / nrow(md2) * 100, 2)#
+          p2 <- ggplot(data = myDiff, mapping = aes(x = meth.diff, y = -log10(qvalue))) +#
+            geom_point(col = "slateblue", alpha = 0.2, size = 0.8) + theme_bw() +#
+            xlab("Difference in Methylation %") + ylab("-Log10(q-value)") +#
+            theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +#
+            geom_hline(yintercept = c(-log10(0.01), -log10(0.001), -log10(0.0001)), linetype = "dashed") +#
+            ylim(c(0, 50)) + ggtitle(paste(lt001, "% of CpGs q < 0.0001", sep = " "))#
+          pc <- grid.arrange(p1, p2, nrow = 1)
+md <- as.data.frame(getData(myDiff))
+md <- as.data.frame(getData(myDiff))
+md$pct_meth <- pc_cpg#
+          p1 <- ggplot(data = md, mapping = aes(x = pc_cpg, y = -log10(qvalue))) + #
+            theme_classic() +#
+            xlab("Overall Percent Methylation at CpG") +#
+            geom_smooth(col = "coral3", fill = "slateblue") +#
+            ylab("Average -log10(q-value)")#
+          cnt <- paste("Total number of CpGs", nrow(md), sep = " ")#
+          p2 <- ggplot(data = md, mapping = aes(x = pc_cpg)) + theme_classic() +#
+            xlab("Overall Percent Methylation at CpG") +#
+            geom_histogram(fill = "coral3", color = "gray30", binwidth = 2.5) +#
+            ylab("Number of CpG Sites") + ggtitle(cnt)#
+          p3 <- ggplot(data = md, mapping = aes(x = pc_cpg, y = abs(meth.diff))) + #
+            theme_classic() +#
+            xlab("Overall Percent Methylation at CpG") +#
+            geom_smooth(col = "coral3", fill = "slateblue") +#
+            ylab("Abs(Group Difference in Methylation)")#
+          pb <- ggarrange(p1, p2, p3, nrow = 1)#
+        # Plot them, or turn off plot for text output #
+          diffMethPerChr(myDiff, plot = FALSE, qvalue.cutoff = 0.01, meth.cutoff = 25)#
+          p1 <- ggplot(data = myDiff, mapping = aes(x = qvalue)) +#
+            geom_histogram(fill = "coral3", binwidth = 0.01, color = "gray30") +#
+            theme_classic() + xlab("Difference q-value") +#
+            ylab("Number of CpG Sites")#
+          md2 <- getData(md)#
+          lt001 <- round(nrow(subset(md2, md2$qvalue < 0.0001)) / nrow(md2) * 100, 2)#
+          p2 <- ggplot(data = myDiff, mapping = aes(x = meth.diff, y = -log10(qvalue))) +#
+            geom_point(col = "slateblue", alpha = 0.2, size = 0.8) + theme_bw() +#
+            xlab("Difference in Methylation %") + ylab("-Log10(q-value)") +#
+            theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +#
+            geom_hline(yintercept = c(-log10(0.01), -log10(0.001), -log10(0.0001)), linetype = "dashed") +#
+            ylim(c(0, 50)) + ggtitle(paste(lt001, "% of CpGs q < 0.0001", sep = " "))#
+          pc <- grid.arrange(p1, p2, nrow = 1)
+pa
+pb
+pc
+p1 <- ggplot(data = getData(myDiff), mapping = aes(x = qvalue)) +#
+            geom_histogram(fill = "coral3", binwidth = 0.01, color = "gray30") +#
+            theme_classic() + xlab("Difference q-value") +#
+            ylab("Number of CpG Sites")#
+          md2 <- getData(md)#
+          lt001 <- round(nrow(subset(md2, md2$qvalue < 0.0001)) / nrow(md2) * 100, 2)#
+          p2 <- ggplot(data = myDiff, mapping = aes(x = meth.diff, y = -log10(qvalue))) +#
+            geom_point(col = "slateblue", alpha = 0.2, size = 0.8) + theme_bw() +#
+            xlab("Difference in Methylation %") + ylab("-Log10(q-value)") +#
+            theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +#
+            geom_hline(yintercept = c(-log10(0.01), -log10(0.001), -log10(0.0001)), linetype = "dashed") +#
+            ylim(c(0, 50)) + ggtitle(paste(lt001, "% of CpGs q < 0.0001", sep = " "))#
+          pc <- grid.arrange(p1, p2, nrow = 1)
+p2 <- ggplot(data = getData(myDiff), mapping = aes(x = meth.diff, y = -log10(qvalue))) +
+geom_point(col = "slateblue", alpha = 0.2, size = 0.8) + theme_bw() +#
+            xlab("Difference in Methylation %") + ylab("-Log10(q-value)") +#
+            theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +#
+            geom_hline(yintercept = c(-log10(0.01), -log10(0.001), -log10(0.0001)), linetype = "dashed") +#
+            ylim(c(0, 50)) + ggtitle(paste(lt001, "% of CpGs q < 0.0001", sep = " "))
+lt001 <- round(nrow(subset(md2, md2$qvalue < 0.0001)) / nrow(md2) * 100, 2)
+md2 <- getData(md)
+md2 <- md
+lt001 <- round(nrow(subset(md2, md2$qvalue < 0.0001)) / nrow(md2) * 100, 2)
+lt001
+p2 <- ggplot(data = getData(myDiff), mapping = aes(x = meth.diff, y = -log10(qvalue))) +#
+            geom_point(col = "slateblue", alpha = 0.2, size = 0.8) + theme_bw() +#
+            xlab("Difference in Methylation %") + ylab("-Log10(q-value)") +#
+            theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +#
+            geom_hline(yintercept = c(-log10(0.01), -log10(0.001), -log10(0.0001)), linetype = "dashed") +#
+            ylim(c(0, 50)) + ggtitle(paste(lt001, "% of CpGs q < 0.0001", sep = " "))#
+          pc <- grid.arrange(p1, p2, nrow = 1)
+grid.arrange(pa2, pb, pc, nrow = 3)
+# Put plots together#
+          ggsave(here("3_markdown_summary/DvsE.png"),#
+            grid.arrange(pa2, pb, pc, nrow = 3),#
+            device = "png", width = 9.5, height = 10.2)
