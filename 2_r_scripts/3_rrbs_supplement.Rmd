@@ -1,0 +1,40 @@
+---
+title: "Supplementary material for: Brief increases in corticosterone result in immediate and lasting changes to DNA methylation in a wild bird"
+author: 
+  - Conor C. Taff
+  - Sabrina M. McNew
+  - Leonardo Campagna
+  - Maren N. Vitousek
+header-includes:
+  - \usepackage[font={footnotesize}, labelfont={bf}]{caption}
+  - \usepackage{setspace}\doublespacing
+  - \usepackage{lineno}\linenumbers
+fontsize: 12pt
+output: 
+  bookdown::pdf_document2:
+      number_sections: FALSE
+      toc: FALSE
+      extra_dependencies: ["flafter"]
+  bookdown::word_document2:
+      number_sections: FALSE
+      toc: FALSE
+      extra_dependcies: ["flafter"]
+  bookdown::html_document2:
+      number_sections: FALSE
+      toc: TRUE
+bibliography: references.bib
+csl: molecular-ecology.csl
+---
+
+```{r setup, include = FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+
+
+```{r seq-summary}
+
+```
+
+
+Insert alignment figure.

@@ -228,6 +228,19 @@ This should mostly pick up carryover effects of cort dosing. We don't have enoug
 
 ![](pct_diff_FvsCAD.png)\
 
-# Tile Comparison MethylKit
+# Genomic Features Annotation
 
-Another option in MethylKit is to use tiling windows of fixed size and compare methylation between groups within each window. I played around some with this, but it seems to not work very well, I think because the RRBS approach does not produce a lot of CpG coverage in consecutive sites (as opposed to WGBS). We could revisit this, but I'm leaving it out for now.
+We can use the new genome to split out methylation by genomic features since the function is expected to differ for promoters/introns/exons/CpG islands, etc. First, I turned the gff annotation that Leo sent into a bed file annotation that MethylKit wants using `BEDOPS v2.4.39` and the `gff2bed` script with this command:
+
+```
+gff2bed < TRES_annotation.gff > TRES_annotated.gff.bed
+
+gffToGenePred < TRES_annotation_genes.gff > TRES_genepred
+
+awk -F '\t' '$3 ~ "^gene|exon|CDS|mRNA"' TRES_annotation.gff > TRES_annotation_genes.gff
+cat TRES_annotation_genes.gff | cut -f3 | sort -u
+
+awk -F '\t' '$3 !~ "^match_part"' TRES_annotation.gff > TRES_annotation_no_part.gff
+
+awk -F '\t' '$3 !~ "^match_part"' TRES_1000lines.gff | head 
+```
