@@ -6,7 +6,7 @@
 
 # Load libraries ----
     pacman::p_load("methylKit", "tidyverse", "here", "gridExtra", "ggpubr", "viridis", "DSS", "genomation",
-                   "lme4", "lmerTest", "reshape2", "emmeans", "lmtest", "MuMIn")
+                   "lme4", "lmerTest", "reshape2", "emmeans", "lmtest", "MuMIn", "qvalue")
 
 # Load data ----
     cov_list <- list.files(here("0_processed_data/bismark_cov_output"))
@@ -18,65 +18,84 @@
     cont_col <- "#E69F00"
     pre_col <- "#999999"
     
+    theme_rrbs <- function(){
+      theme_bw() %+replace% # replace elements I want to change
+        
+        theme(
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.text = element_text(size = 14),
+          axis.title = element_text(size = 16)
+        ) 
+    }
+    
 # Simple plots of reads and methylation ----
     # reads and methylation levels
             p_a <- d_bis %>%
                 pivot_longer(cols = c("Total.Reads", "Aligned.Reads"), names_to = "Type") %>%
                 ggplot(mapping = aes(x = value/1000, fill = Type)) + 
-                    geom_histogram(alpha = 0.5, binwidth = 1000, position = "identity", color = "gray30") +
+                    geom_histogram(alpha = 0.5, breaks = seq(0, 20000, 1000), position = "identity", color = "gray30") +
                     theme_classic() + xlab("Sequences / 1000") +
                     scale_fill_manual(values = c(Total.Reads = "#F0E442", Aligned.Reads = "#56B4E9"),
                                       labels = c("Total Reads", "Aligned Reads")) +
                     ylab("Number of Samples") +
-                    theme(legend.position = c(0.8, 0.8), legend.title = element_blank()) +
-                    annotate("text", x = -Inf, y = Inf, hjust = -0.7, vjust = 1.5, label = "A")
+                    theme(legend.position = c(0.7, 0.8), legend.title = element_blank()) +
+                    annotate("text", x = -Inf, y = Inf, hjust = -0.7, vjust = 1.5, label = "A", size = 8) +
+                    theme(axis.text = element_text(size = 11), axis.title = element_text(size = 10), legend.text = element_text(size = 10))
             
             p_d <- d_bis %>%
                 pivot_longer(cols = c("Methylated.CpGs", "Unmethylated.CpGs"), names_to = "Type") %>%
                 ggplot(mapping = aes(x = value/1000, fill = Type)) + 
-                    geom_histogram(alpha = 0.5, binwidth = 1000, position = "identity", color = "gray30") +
-                    theme_classic() + xlab("Number of CpGs / 1000") +
+                    geom_histogram(alpha = 0.5, bins = 15, position = "identity", color = "gray30") +
+                    theme_classic() + xlab("CpGs / 1000") +
                     scale_fill_manual(values = c(Unmethylated.CpGs = "#009E73", Methylated.CpGs = "#E69F00"),
-                                      labels = c("Methylated", "Unmethylated")) +
-                    ylab("Number of Samples") +
-                    theme(legend.position = c(0.8, 0.8), legend.title = element_blank()) +
-                    annotate("text", x = -Inf, y = Inf, hjust = -0.7, vjust = 1.5, label = "D")
+                                      labels = c("Unmethylated", "Methylated")) +
+                    ylab("Number of samples") +
+                    #theme(legend.position = c(0.8, 0.8), legend.title = element_blank()) +
+                    guides(fill = "none") +
+                    annotate("text", x = -Inf, y = Inf, hjust = -.9, vjust = 1.5, label = "D", size = 6) +
+                    theme(axis.text = element_text(size = 11), axis.title = element_text(size = 10))
             
             p_b <- d_bis %>%
                 pivot_longer(cols = c("Methylated.CpHs", "Unmethylated.CpHs"), names_to = "Type") %>%
                 ggplot(mapping = aes(x = value/1000, fill = Type)) + 
-                    geom_histogram(alpha = 0.5, binwidth = 1000, position = "identity", color = "gray30") +
-                    theme_classic() + xlab("Number of CpHs / 1000") +
+                    geom_histogram(alpha = 0.5, bins = 15, position = "identity", color = "gray30") +
+                    theme_classic() + xlab("CpHs / 1000") +
                     scale_fill_manual(values = c(Unmethylated.CpHs = "#009E73", Methylated.CpHs = "#E69F00"),
-                                      labels = c("Methylated", "Unmethylated")) +
-                    ylab("Number of Samples") + ylim(c(0, 130)) +
-                    theme(legend.position = c(0.8, 0.8), legend.title = element_blank()) +
-                    annotate("text", x = -Inf, y = Inf, hjust = -0.7, vjust = 1.5, label = "B") +
-                    annotate("text", x = 38e3, y = 25, label = "1.0% methylation", size = 3)
+                                      labels = c("Unmethylated", "Methylated")) +
+                    ylab("Number of samples") + ylim(c(0, 130)) +
+                    theme(legend.position = c(0.6, 0.65), legend.title = element_blank(), legend.text = element_text(size = 8)) +
+                    annotate("text", x = -Inf, y = Inf, hjust = -1.5, vjust = 1.5, label = "B", size = 6) +
+                    #annotate("text", x = 38e3, y = 25, label = "1.0% methylation", size = 3) +
+                    theme(axis.text = element_text(size = 11), axis.title = element_text(size = 10))
             
             p_c <- d_bis %>%
                 pivot_longer(cols = c("Methylated.CHHs", "Unmethylated.CHHs"), names_to = "Type") %>%
                 ggplot(mapping = aes(x = value/1000, fill = Type)) + 
-                    geom_histogram(alpha = 0.5, binwidth = 1000, position = "identity", color = "gray30") +
-                    theme_classic() + xlab("Number of CHHs / 1000") +
+                    geom_histogram(alpha = 0.5, bins = 15, position = "identity", color = "gray30") +
+                    theme_classic() + xlab("CHHs / 1000") +
                     scale_fill_manual(values = c(Unmethylated.CHHs = "#009E73", Methylated.CHHs = "#E69F00"),
-                                      labels = c("Methylated", "Unmethylated")) +
-                    ylab("Number of Samples") + ylim(c(0, 120)) +
-                    theme(legend.position = c(0.8, 0.8), legend.title = element_blank()) +
-                    annotate("text", x = -Inf, y = Inf, hjust = -0.7, vjust = 1.5, label = "C") +
-                    annotate("text", x = 75e3, y = 25, label = "0.6% methylation", size = 3)
+                                      labels = c("Unmethylated", "Methylated")) +
+                    ylab("Number of samples") + ylim(c(0, 120)) +
+                    #theme(legend.position = c(0.8, 0.8), legend.title = element_blank()) +
+                    guides(fill = "none") +
+                    annotate("text", x = -Inf, y = Inf, hjust = -1.5, vjust = 1.5, label = "C", size = 6) +
+                    #annotate("text", x = 75e3, y = 25, label = "0.6% methylation", size = 3) +
+                    theme(axis.text = element_text(size = 11), axis.title = element_text(size = 10)) +
+                    scale_x_continuous(breaks = seq(0, 200000, 40000))
             
             p_e <- ggplot(data = d_bis, mapping = aes(x = (Methylated.CpGs / (Unmethylated.CpGs + Methylated.CpGs)) * 100)) +
                 geom_histogram(fill = "#D55E00", binwidth = 2.5, color = "gray30", alpha = 0.6) + 
-                theme_classic() + xlab("CpG Methylation Percentage") +
-                ylab("Number of Samples") +
-                annotate("text", x = -Inf, y = Inf, hjust = -0.7, vjust = 1.5, label = "E")
+                theme_classic() + xlab("CpG methylation %") +
+                ylab("Number of samples") +
+                annotate("text", x = -Inf, y = Inf, hjust = -.9, vjust = 1.5, label = "E", size = 6) +
+                theme(axis.text = element_text(size = 11), axis.title = element_text(size = 10))
             
             ggsave(here("3_markdown_summary/read_summary.png"),
                 grid.arrange(p_a, p_b, p_c, p_d, p_e,
                          layout_matrix = rbind(c(1, 1, 2, 4),
                                                c(1, 1, 3, 5))),
-                device = "png", width = 12.1, height = 5.9)
+                device = "png", width = 9, height = 4.5)
     
     
     # Reads vs. alignment
@@ -163,8 +182,8 @@
                 
 # 0. Settings for MethylKit ----
     # Define the groups to be included
-      group_1 <- "B"
-      group_2 <- "E"
+      group_1 <- "C"
+      group_2 <- "F"
       
     # Define colors for plotting teh two groups (group 1 & group 2), see above in 'set colors' section for names
       col1 <- pre_col
@@ -180,7 +199,7 @@
         hi_perc <- 99.5
         
     # Define minimum number of sample per group for CpG to be included in comparison
-        min_p_group <- 10L
+        min_p_group <- 6L  # changing to 6 for cross year, at 10 for within year
         
     # Randomization number of loops (takes a while)
         n_rand <- 10
@@ -279,7 +298,8 @@
         #meth2 <- readRDS(here("6_meth_RDS", paste0("meth", suff, ".RDS")))
         
 # 3.5 START HERE IF READING IN ----        
-      #meth2 <- readRDS(here::here("6_meth_RDS", "meth_BvE.rds")) 
+      #meth2 <- readRDS(here::here("6_meth_RDS", "meth_AvD.rds")) 
+          # for basic description of patterns use meth_AvD
             
 # 4. Overall methylation percentage ----            
                       
@@ -321,6 +341,7 @@
           
           
 # 5. Create PCA plot ----
+        ## NOT REPORTED
         # Makes three panel PCA plot 1v2, 2v3, 1v3
         #plot clustered dendrogram
           clusterSamples(meth2, dist = "correlation", method = "ward", plot = TRUE)
@@ -370,6 +391,8 @@
           ggsave(here("3_markdown_summary", paste0("pca", suff, ".png")), pa2, device = "png", width = 10, height = 3.6)
           
 # 6. Finding differential CpGs ----
+      ## THIS IS BASIC METHYLKIT APPROACH BUT NOT USING BECAUSE DOESNT FIT OUR DATA STRUCTURE    
+          
       # Use DSS beta-binomial model method to calculate differences       
           if(dss == "yes"){myDiff <- calculateDiffMethDSS(meth2, adjust = "fdr", mc.cores = 4)} 
           if(dss == "no"){myDiff <- calculateDiffMeth(meth2, test = "F", adjust = "SLIM", overdispersion = "MN", mc.cores = 4)}
@@ -448,6 +471,7 @@
           #   device = "png", width = 9.5, height = 10.2)
           
 # 7. Randomization ----
+          ## NOT USING THIS CURRENTLY 
       # 
       # i <- 1
       # trts <- attr(meth2, which = "treatment") 
@@ -501,6 +525,7 @@
       #     
 
 # Pairwise correlation ----
+         
     # Uses 'meth2' from above
           # Plot correlation between samples. Only good if just a few samples.
             cormat <- cor(percMethylation(meth2), use = "complete.obs")
@@ -586,55 +611,58 @@
     ggsave(here::here("3_markdown_summary", "delta_pc.png"), device = "png", width = 7.4, height = 6.4)
 
     
-# Out to lme4 ----
+# Out to GLMM models ----
     
-  ## New approach for logistic regression  
+  ## Approach for logistic regression of each CPG site 
     # Extracting info from methylkit (this could be a function). Need to run separately for pairs then combine
-      # Three comparisons cover everything: AvD, BvE, FvCAD. Run three times and save to file with right suffix
-    #       temp <- as.data.frame(methylKit::getData(meth2))
-    #       temp2 <- temp %>%
-    #         pivot_longer(cols = starts_with("coverage"),
-    #                      names_to = "sample",
-    #                      values_to = "coverage")
-    #       temp2 <- temp2[, c("chr", "start", "end", "strand", "sample", "coverage")]
-    #       temp2$joiner <- paste(temp2$chr, temp2$start, temp2$end, temp2$sample, sep = "_")
-    #       temp3 <- temp %>%
-    #         pivot_longer(cols = starts_with("numCs"),
-    #                      names_to = "sample2",
-    #                      values_to = "num_cs")
-    #       temp3 <- temp3[, c("chr", "start", "end", "sample2", "num_cs")]
-    #       temp3$joiner <- paste(temp3$chr, temp3$start, temp3$end, temp3$sample2, sep = "_")
-    #       temp3$joiner <- gsub("numCs", "coverage", temp3$joiner)
-    #       temp4 <- plyr::join(temp2, temp3, "joiner", "left", "first")
-    # 
-    #       s_ids <- data.frame(sample_id = attr(meth2, which = "sample.ids"),
-    #                           sample = paste0("coverage", seq(1, length(attr(meth2, which = "sample.ids")))))
-    #       temp4 <- plyr::join(temp4, s_ids, "sample")
-    #       temp4 <- na.omit(temp4)
-    #   
-    # # Joining to sample data
-    #   ds <- d_sample[, c("sample_id", "band", "year", "min_age", "age_group", "treatment", 
-    #                      "group", "group_id", "comp_grp", "trt_label", "cross_grp",
-    #                      "mass", "bhead", "fwing", "s_cort", "b_cort")]
-    #   temp4 <- plyr::join(temp4, ds, "sample_id")
+      # Three comparisons cover everything: AvD (pre), BvE (post), FvC (year later) 
+      # Run three times and save to file with right suffix (using code chunks above)
+        # 2/10/23 this is already run and saved to file to load in below
+              # temp <- as.data.frame(methylKit::getData(meth2))  # meth2 should be one of the comparisons AD/BE/FC
+              # temp2 <- temp %>%
+              #   pivot_longer(cols = starts_with("coverage"),
+              #                names_to = "sample",
+              #                values_to = "coverage")
+              # temp2 <- temp2[, c("chr", "start", "end", "strand", "sample", "coverage")]
+              # temp2$joiner <- paste(temp2$chr, temp2$start, temp2$end, temp2$sample, sep = "_")
+              # temp3 <- temp %>%
+              #   pivot_longer(cols = starts_with("numCs"),
+              #                names_to = "sample2",
+              #                values_to = "num_cs")
+              # temp3 <- temp3[, c("chr", "start", "end", "sample2", "num_cs")]
+              # temp3$joiner <- paste(temp3$chr, temp3$start, temp3$end, temp3$sample2, sep = "_")
+              # temp3$joiner <- gsub("numCs", "coverage", temp3$joiner)
+              # temp4 <- plyr::join(temp2, temp3, "joiner", "left", "first")
+              # 
+              # s_ids <- data.frame(sample_id = attr(meth2, which = "sample.ids"),
+              #                     sample = paste0("coverage", seq(1, length(attr(meth2, which = "sample.ids")))))
+              # temp4 <- plyr::join(temp4, s_ids, "sample")
+              # temp4 <- na.omit(temp4)
+
+        # Joining to sample data
+          # ds <- d_sample[, c("sample_id", "band", "year", "min_age", "age_group", "treatment",
+          #                    "group", "group_id", "comp_grp", "trt_label", "cross_grp",
+          #                    "mass", "bhead", "fwing", "s_cort", "b_cort")]
+          # temp4 <- plyr::join(temp4, ds, "sample_id")
 
 
-      
-      #saveRDS(temp4, here::here("6_meth_RDS/extract_BvE.rds"))   # change suffix to match comparison
-      filt_DA <- readRDS(here::here("6_meth_RDS/extract_DvA.rds"))
-      filt_BE <- readRDS(here::here("6_meth_RDS/extract_BvE.rds"))
-      #filt_CAD <- readRDS(here::here("6_meth_RDS/extract_FvCAD.rds"))
+      # save the produced object. saves for each of the three are loaded from file
+          #saveRDS(temp4, here::here("6_meth_RDS/extract_FvC.rds"))   # change suffix to match comparison
+          filt_DA <- readRDS(here::here("6_meth_RDS/extract_DvA.rds")) #DA is 1st capture year 1
+          filt_BE <- readRDS(here::here("6_meth_RDS/extract_BvE.rds")) #BE is post treatment capture year 1
+          filt_CF <- readRDS(here::here("6_meth_RDS/extract_FvC.rds")) #CF is capture in 2016 one year after treatments
       
       # add in location column
-      filt_DA$location <- paste(filt_DA$chr, filt_DA$start, filt_DA$end, sep = "_")
-      filt_BE$location <- paste(filt_BE$chr, filt_BE$start, filt_BE$end, sep = "_")
-        #t4_CAD$location <- paste(t4_CAD$chr, t4_CAD$start, t4_CAD$end, sep = "_")
+          filt_DA$location <- paste(filt_DA$chr, filt_DA$start, filt_DA$end, sep = "_")
+          filt_BE$location <- paste(filt_BE$chr, filt_BE$start, filt_BE$end, sep = "_")
+          filt_CF$location <- paste(filt_CF$chr, filt_CF$start, filt_CF$end, sep = "_")
       
-      # filter to locations in both datasets (only needed for the pre-post comparison)
-            u1 <- data.frame(location = unique(filt_DA$location))
-            u2 <- data.frame(location = unique(filt_BE$location), inDA = "yes")
-            u1 <- plyr::join(u1, u2, "location", "left", "first")
-            u3 <- subset(u1, u1$inDA == "yes")
+      # filter to locations in both datasets for pre-post within year
+        # this is just figuring out which CpGs actually have data for both pre and post
+            u1 <- data.frame(location = unique(filt_DA$location))   # list of cpg locations in D&A group
+            u2 <- data.frame(location = unique(filt_BE$location), inDA = "yes") # list of cpg locations in B&E group
+            u1 <- plyr::join(u1, u2, "location", "left", "first") #joins list of sites in DA vs. BE together
+            u3 <- subset(u1, u1$inDA == "yes") # removes sites from list that aren't in both objects
             colnames(u3) <- c("locs", "inDA")
             
             filt_DA <- filt_DA[, c("joiner", "chr", "start", "end", "sample", "coverage", 
@@ -649,73 +677,422 @@
                                    "group", "comp_grp", "trt_label", "mass", "bhead", "fwing", "s_cort", "b_cort")]
             st4 <- filter(filt_BE, location %in% u3$locs)
             
-          # Add column for percent methylation  
-            stemp4$pct_meth <- stemp4$num_cs / stemp4$coverage  
-            st4$pct_meth <- st4$num_cs / st4$coverage
+      # filter to locations in both datasets for cross year comparison. same as last code block but for cross year
+          # this is just figuring out which CpGs actually have data for yr 1 and yr 2
+            u1x <- data.frame(location = unique(filt_DA$location))
+            u2x <- data.frame(location = unique(filt_CF$location), inDA = "yes")
+            u1x <- plyr::join(u1x, u2x, "location", "left", "first")
+            u3x <- subset(u1x, u1x$inDA == "yes")
+            colnames(u3x) <- c("locs", "inDA")
             
-            stemp4$pp_join <- paste(stemp4$location, stemp4$band, sep = "_")
-            st4$pp_join <- paste(st4$location, st4$band, sep = "_")
+            filt_DA <- filt_DA[, c("joiner", "chr", "start", "end", "sample", "coverage", 
+                                   "sample2", "num_cs", "sample_id", "location",
+                                   "band", "year", "min_age", "age_group", "treatment", 
+                                   "group", "comp_grp", "trt_label", "mass", "bhead", "fwing", "s_cort", "b_cort")]
+            stemp4x <- filter(filt_DA, location %in% u3x$locs)
+            
+            filt_CF <- filt_CF[, c("joiner", "chr", "start", "end", "sample", "coverage", 
+                                   "sample2", "num_cs", "sample_id", "location",
+                                   "band", "year", "min_age", "age_group", "treatment", 
+                                   "group", "comp_grp", "trt_label", "mass", "bhead", "fwing", "s_cort", "b_cort")]
+            st4x <- filter(filt_CF, location %in% u3x$locs)
+        
+      # filter for the correlation with natural cort models
+          # in this case don't need the same joining as done above
+            nat_cort <- filt_DA[, c("joiner", "chr", "start", "end", "sample", "coverage", 
+                                    "sample2", "num_cs", "sample_id", "location",
+                                    "band", "year", "min_age", "age_group", "treatment", 
+                                    "group", "comp_grp", "trt_label", "mass", "bhead", "fwing", "s_cort", "b_cort")]
+            
+            
+          # Add column for percent methylation  
+            stemp4$pct_meth <- stemp4$num_cs / stemp4$coverage  # within year pre
+            st4$pct_meth <- st4$num_cs / st4$coverage # within year post
+            nat_cort$pct_meth <- nat_cort$num_cs / nat_cort$coverage # unmanipulated cort comparison
+            
+            stemp4x$pct_meth <- stemp4x$num_cs / stemp4x$coverage # cross year pre
+            st4x$pct_meth <- st4x$num_cs / st4x$coverage # cross year post
+            
+            stemp4$pp_join <- paste(stemp4$location, stemp4$band, sep = "_") # within year pre
+            st4$pp_join <- paste(st4$location, st4$band, sep = "_") # within year post
+            
+            stemp4x$pp_join <- paste(stemp4x$location, stemp4x$band, sep = "_") # cross year pre
+            st4x$pp_join <- paste(st4x$location, st4x$band, sep = "_") # cross year post
             
           # join reduced version of pre measures to the post measures
-            stemp4b <- stemp4[, c("pp_join", "coverage", "num_cs", "pct_meth", "sample_id",
-                            "group", "mass", "bhead", "fwing", "s_cort", "b_cort")]
-            colnames(stemp4b) <- c("pp_join", "pre_cov", "pre_numcs", "pre_pctm", "pre_sampid",
-                                "pre_group", "pre_mass", "pre_bhead", "pre_fwing", "pre_scort", "pre_bcort")
-            comb_pp <- plyr::join(st4, stemp4b, "pp_join")
+            # first for within year comparison
+              stemp4b <- stemp4[, c("pp_join", "coverage", "num_cs", "pct_meth", "sample_id",
+                              "group", "mass", "bhead", "fwing", "s_cort", "b_cort")]
+              colnames(stemp4b) <- c("pp_join", "pre_cov", "pre_numcs", "pre_pctm", "pre_sampid",
+                                  "pre_group", "pre_mass", "pre_bhead", "pre_fwing", "pre_scort", "pre_bcort")
+              comb_pp <- plyr::join(st4, stemp4b, "pp_join")
+              
+            # next for cross year comparison
+              stemp4bx <- stemp4x[, c("pp_join", "coverage", "num_cs", "pct_meth", "sample_id",
+                                    "group", "mass", "bhead", "fwing", "s_cort", "b_cort")]
+              colnames(stemp4bx) <- c("pp_join", "pre_cov", "pre_numcs", "pre_pctm", "pre_sampid",
+                                     "pre_group", "pre_mass", "pre_bhead", "pre_fwing", "pre_scort", "pre_bcort")
+              comb_ppx <- plyr::join(st4x, stemp4bx, "pp_join")
 
       # make wider version for pre-post comparison
-          # gets rid of post rows where no pre measure is available 
+          # gets rid of post rows where no pre measure is available for within season
             comb_pp <- na.omit(comb_pp) # not sure of effect on sample sizes for comps?loses 25% reads
             comb_ppb <- comb_pp[, c("coverage", "num_cs", "location", "band", "treatment",
                                     "pre_pctm")]  
+            
+          # gets rid of post rows where no pre measure is available for cross season
+            comb_ppx <- na.omit(comb_ppx) # not sure of effect on sample sizes for comps?loses 25% reads
+            comb_ppbx <- comb_ppx[, c("coverage", "num_cs", "location", "band", "treatment",
+                                    "pre_pctm")] 
       
-      # for pre-post
+      # prepare an output file to store model results from loops
+          # for pre-post
             output <- data.frame(location = unique(comb_ppb$location),
                                n = NA, trt_p = NA, trt_eff = NA,
                                pre_p = NA, pre_eff = NA, intercept = NA,
                                singular = NA, r2m = NA, r2c = NA, message = NA)
+            
+          # for cross year
+            outputx <- data.frame(location = unique(comb_ppbx$location),
+                                  n = NA, trt_p = NA, trt_eff = NA,
+                                  pre_p = NA, pre_eff = NA, intercept = NA,
+                                  singular = NA, r2m = NA, r2c = NA, message = NA)
+            
+          # for initial capture correlation of cort and methylation
+            output_cor <- data.frame(location = unique(nat_cort$location),
+                                     base_n = NA, base_int = NA, base_eff = NA, base_p = NA,
+                                     base_singular = NA, base_r2c = NA, base_r2m = NA, base_message = NA,
+                                     si_n = NA, si_int = NA, si_eff = NA, si_p = NA,
+                                     si_singular = NA, si_r2c = NA, si_r2m = NA, si_message = NA)  
+              
       # fit models for each cpg
-          start <- Sys.time()
-            #note i = 156 fails useful for testing
-            for(i in 1:nrow(output)){
-              sub <- subset(comb_ppb, comb_ppb$location == output$location[i])
-              m <- glmer(cbind(num_cs, coverage - num_cs) ~ treatment + scale(pre_pctm) + (1|band),
-                                     family = "binomial", data = sub,
-                                      control = glmerControl(optimizer = "bobyqa", boundary.tol = 1e-2,
+            # first for within year comparison  
+                start <- Sys.time()
+                  #note i = 156 fails useful for testing
+                  for(i in 1:nrow(output)){
+                    sub <- subset(comb_ppb, comb_ppb$location == output$location[i])
+                    m <- glmer(cbind(num_cs, coverage - num_cs) ~ treatment + scale(pre_pctm) + (1|band),
+                                           family = "binomial", data = sub,
+                                            control = glmerControl(optimizer = "bobyqa", boundary.tol = 1e-2,
+                                                                  optCtrl = list(maxfun = 2e8)))
+                       
+                    if(length(m@optinfo$conv$lme4$messages) > 0){
+                      output$message[i] <- m@optinfo$conv$lme4$messages
+                    } 
+                    
+                    output$n[i] <- nrow(sub)
+                    
+                    
+                    s <- summary(m)
+                    output$trt_p[i] <- s$coefficients[2, 4]
+                    output$trt_eff[i] <- s$coefficients[2, 1]
+                    output$pre_p[i] <- s$coefficients[3, 4]
+                    output$pre_eff[i] <- s$coefficients[3, 1]
+                    output$intercept[i] <- s$coefficients[1,1]
+                    
+                    output$singular[i] <- isSingular(m)
+                    
+                    rs <- suppressWarnings(r.squaredGLMM(m))
+                    output$r2m[i] <- rs[1,1]
+                    output$r2c[i] <- rs[1,2]
+                    
+                    em_m <- pairs(emmeans(m, ~ treatment), adjust = "none")
+                    
+                    print(i)
+                  }
+                end <- Sys.time()
+                    within_elapse <- end - start
+                    
+                    output$cont_est <- rethinking::logistic(output$intercept)
+                    output$cort_est <- rethinking::logistic(output$intercept + output$trt_eff)
+                    output$cont_min_cort <- output$cont_est - output$cort_est
+                    qq <- qvalue(output$trt_p, fdr.level = 0.05)  
+                    output$trt_q <- qq$qvalues
+                    qq_pre <- qvalue(output$pre_p, fdr.level = 0.05)
+                    output$pre_q <- qq_pre$qvalues
+                    output2 <- subset(output, is.na(output$message) == TRUE)
+                    output2$sig <- "no"
+                    for(i in 1:nrow(output2)){
+                      if(output2$trt_q[i] < 0.05){output2$sig[i] <- "yes"}
+                    }
+                    
+                    sig_list <- subset(output2, output2$trt_q < 0.05)
+          
+            # Next for cross year comparison
+                    start <- Sys.time()
+                    for(i in 1:nrow(outputx)){
+                      subx <- subset(comb_ppbx, comb_ppbx$location == outputx$location[i])
+                      outputx$n[i] <- nrow(subx)
+                      if(outputx$n[i] > 6){
+                          mx <- glmer(cbind(num_cs, coverage - num_cs) ~ treatment + scale(pre_pctm) + (1|band),
+                                     family = "binomial", data = subx,
+                                     control = glmerControl(optimizer = "bobyqa", boundary.tol = 1e-2,
                                                             optCtrl = list(maxfun = 2e8)))
-                 
-              if(length(m@optinfo$conv$lme4$messages) > 0){
-                output$message[i] <- m@optinfo$conv$lme4$messages
-              } 
+                          
+                          if(length(mx@optinfo$conv$lme4$messages) > 0){
+                            outputx$message[i] <- mx@optinfo$conv$lme4$messages
+                          } 
+                          
+                          
+                          
+                          
+                          sx <- summary(mx)
+                          outputx$trt_p[i] <- sx$coefficients[2, 4]
+                          outputx$trt_eff[i] <- sx$coefficients[2, 1]
+                          outputx$pre_p[i] <- sx$coefficients[3, 4]
+                          outputx$pre_eff[i] <- sx$coefficients[3, 1]
+                          outputx$intercept[i] <- sx$coefficients[1,1]
+                          
+                          outputx$singular[i] <- isSingular(mx)
+                          
+                          rsx <- suppressWarnings(r.squaredGLMM(mx))
+                          outputx$r2m[i] <- rsx[1,1]
+                          outputx$r2c[i] <- rsx[1,2]
+                          
+                          em_mx <- pairs(emmeans(mx, ~ treatment), adjust = "none")
+                      }
+                      
+                      print(i)
+                    }
+                    end <- Sys.time()
+                    cross_elapse <- end - start
+                    
+                    outputx$cont_est <- rethinking::logistic(outputx$intercept)
+                    outputx$cort_est <- rethinking::logistic(outputx$intercept + outputx$trt_eff)
+                    outputx$cont_min_cort <- outputx$cont_est - outputx$cort_est
+                    qqx <- qvalue(outputx$trt_p, fdr.level = 0.05)  
+                    qq_prex <- qvalue(outputx$pre_p, fdr.level = 0.05)
+                    outputx$trt_q <- qqx$qvalues
+                    outputx$pre_q <- qq_prex$qvalues
+                    
+                    outputx$sig <- "no"
+                    for(i in 1:nrow(outputx)){
+                      if(is.na(outputx$trt_q[i]) == FALSE){
+                        if(outputx$trt_q[i] < 0.05){outputx$sig[i] <- "yes"}
+                      }
+                    }
+                    output2x <- subset(outputx, outputx$singular == FALSE)
+                    output2x <- subset(output2x, is.na(output2x$message) == TRUE)
+                    
+                    
+                    sig_listx <- subset(output2x, output2x$trt_q < 0.05)
+                    
+            # Finally for pre-treatment correlation with natural cort variation
+                  
+                    start <- Sys.time()
+                    for(i in 1:nrow(output_cor)){
+                      subc <- subset(nat_cort, nat_cort$location == output_cor$location[i])
+                      output_cor$base_n[i] <- nrow(subset(subc, is.na(subc$b_cort) == FALSE))
+                      output_cor$si_n[i] <- nrow(subset(subc, is.na(subc$s_cort) == FALSE))
+                      
+                      if(output_cor$base_n[i] > 9){
+                        mc <- glmer(cbind(num_cs, coverage - num_cs) ~ scale(b_cort) + (1|band),
+                                  family = "binomial", data = subc)
+                        
+                        if(length(mc@optinfo$conv$lme4$messages) > 0){
+                          output_cor$base_message[i] <- mc@optinfo$conv$lme4$messages
+                        } 
+
+                        sc <- summary(mc)$coefficients
+                        rc <- suppressWarnings(r.squaredGLMM(mc))
+                        output_cor$base_r2c[i] <- rc[1, 2]
+                        output_cor$base_r2m[i] <- rc[1, 1]
+                        output_cor$base_int[i] <- sc[1, 1]
+                        output_cor$base_eff[i] <- sc[2, 1]
+                        output_cor$base_p[i] <- sc[2, 4]
+                        output_cor$base_singular[i] <- isSingular(mc)
+                      }
+                      
+                      if(output_cor$si_n[i] > 9){
+                        ms <- glmer(cbind(num_cs, coverage - num_cs) ~ scale(s_cort) + (1|band),
+                                    family = "binomial", data = subc)
+                        
+                        if(length(ms@optinfo$conv$lme4$messages) > 0){
+                          output_cor$si_message[i] <- ms@optinfo$conv$lme4$messages
+                        } 
+                        
+                        ss <- summary(ms)$coefficients
+                        rs <- suppressWarnings(r.squaredGLMM(ms))
+                        output_cor$si_r2c[i] <- rs[1, 2]
+                        output_cor$si_r2m[i] <- rs[1, 1]
+                        output_cor$si_int[i] <- ss[1, 1]
+                        output_cor$si_eff[i] <- ss[2, 1]
+                        output_cor$si_p[i] <- ss[2, 4]
+                        output_cor$si_singular[i] <- isSingular(ms)
+                      }
+                    
+                      
+                      
+                      
+                      print(i)
+                    }
+                    end <- Sys.time()
+                    obs_elapse <- end - start 
+                    
+                    qqb <- qvalue(output_cor$base_p, fdr.level = 0.05)  
+                    output_cor$base_q <- qqb$qvalues
+                    qqs <- qvalue(output_cor$si_p, fdr.level = 0.05)
+                    output_cor$si_q <- qqs$qvalues
+                    
+                    output_cor$base_sig <- "no"
+                    output_cor$si_sig <- "no"
+                    
+                    for(i in 1:nrow(output_cor)){
+                      if(output_cor$base_q[i] < 0.05){output_cor$base_sig[i] <- "yes"}
+                      if(output_cor$si_q[i] < 0.05){output_cor$si_sig[i] <- "yes"}
+                    }
+                    
+                    output_base <- subset(output_cor, output_cor$base_singular == FALSE & is.na(output_cor$base_message) == TRUE)
+                    output_si <- subset(output_cor, output_cor$si_singular == FALSE & is.na(output_cor$si_message) == TRUE)
+                    
+                    
+                    sig_list_base <- subset(output_base, output_base$base_q < 0.05)
+                    sig_list_si <- subset(output_si, output_si$si_q < 0.05)
+                    
+          # collecting the output of all of these loops into one object to save
+              # so that it can be loaded without running again
+                    
+                model_loop_output <- list(output, output2, sig_list,     # within year
+                                            outputx, output2x, sig_listx,  # between year
+                                            output_cor,                    # correlation with cort
+                                            output_base, sig_list_base,    # base cort only
+                                            output_si, sig_list_si)       # induced cort only
+                saveRDS(model_loop_output, here::here("4_other_output/model_loop_output.rds"))
+                model_loop_output <- readRDS(here::here("4_other_output/model_loop_output.rds"))
+          
+          # make a volcano plot for the four comparisons
+              output_base <- model_loop_output[[8]]
+              pv1 <- ggplot(data = output_base, 
+                            mapping = aes(x = base_eff, y = -log(as.numeric(base_p), 10), color = base_sig)) +
+                geom_hline(yintercept = -log(c(0.05, 0.01, 0.001, 0.0001), 10), linetype = "dashed", color = "gray70") +
+                theme_rrbs() +
+                geom_point(alpha = 0.7, size = 0.8) +
+                xlab("Regression coefficient of \n baseline corticosterone") +
+                ylab("-log10(p-value)") +
+                scale_color_manual(values = c("gray20", "red")) +
+                guides(color = "none") +
+                coord_cartesian(xlim = c(-3, 3), ylim = c(0, 6.5)) +
+                ggtitle("Baseline corticosterone") +
+                #ggtitle("116 of 78,143 CpGs") + # associated with baseline corticosterone (78,143)") +
+                annotate(geom = "text", label = "A", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+                theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
               
-              output$n[i] <- nrow(sub)
+              output_si <- model_loop_output[[10]]
+              pv2 <- ggplot(data = output_si, 
+                            mapping = aes(x = si_eff, y = -log(as.numeric(si_p), 10), color = si_sig)) +
+                geom_hline(yintercept = -log(c(0.05, 0.01, 0.001, 0.0001), 10), linetype = "dashed", color = "gray70") +
+                theme_rrbs() +
+                geom_point(alpha = 0.7, size = 0.8) +
+                xlab("Regression coefficient of \n stress-induced corticosterone") +
+                ylab("-log10(p-value)") +
+                scale_color_manual(values = c("gray20", "red")) +
+                guides(color = "none") +
+                coord_cartesian(xlim = c(-3, 3), ylim = c(0, 6.5)) +
+                ggtitle("Stress-induced corticosterone") +
+                #ggtitle("356 of 78,027 CpGs") + # associated with stress-induced corticosterone (78,027)") +
+                annotate(geom = "text", label = "B", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+                theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
+              
+              within_output <- model_loop_output[[2]]
+              pv3 <- ggplot(data = within_output, 
+                            mapping = aes(x = cont_min_cort * 100, y = -log(as.numeric(trt_p), 10), color = sig)) +
+                geom_hline(yintercept = -log(c(0.05, 0.01, 0.001, 0.0001), 10), linetype = "dashed", color = "gray70") +
+                theme_rrbs() +
+                geom_point(alpha = 0.7, size = 0.8) +
+                xlab("Difference in % methylation \n control minus treatment") +
+                ylab("-log10(p-value)") +
+                scale_color_manual(values = c("gray20", "red")) +
+                coord_cartesian(ylim = c(0, 6.5), xlim = c(-100, 100)) +
+                guides(color = "none") +
+                ggtitle("Within year treatment") +
+                #ggtitle("111 of 48,070 CpGs") + # associated with treatment (48,070)") +
+                annotate(geom = "text", label = "C", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+                theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
+              
+              across_output <- model_loop_output[[5]]
+              pv4 <- ggplot(data = across_output, 
+                            mapping = aes(x = cont_min_cort * 100, y = -log(as.numeric(trt_p), 10), color = sig)) +
+                geom_hline(yintercept = -log(c(0.05, 0.01, 0.001, 0.0001), 10), linetype = "dashed", color = "gray70") +
+                theme_rrbs() +
+                geom_point(alpha = 0.7, size = 0.8) +
+                xlab("Difference in % methylation \n control minus treatment") +
+                ylab("-log10(p-value)") +
+                scale_color_manual(values = c("gray20", "red")) +
+                coord_cartesian(ylim = c(0, 6.5), xlim = c(-100, 100)) +
+                guides(color = "none") +
+                ggtitle("Between year treatment") +
+                #ggtitle("49 of 6,787 CpGs") + # associated with treatment (6,787)") +
+                annotate(geom = "text", label = "D", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+                theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
               
               
-              s <- summary(m)
-              output$trt_p[i] <- s$coefficients[2, 4]
-              output$trt_eff[i] <- s$coefficients[2, 1]
-              output$pre_p[i] <- s$coefficients[3, 4]
-              output$pre_eff[i] <- s$coefficients[3, 1]
-              output$intercept[i] <- s$coefficients[1,1]
+              pviol <- ggpubr::ggarrange(pv1, pv2, pv3, pv4, ncol = 2, nrow = 2)
+              saveRDS(pviol, file = here::here("5_temporary_files/pviol.rds"))
               
-              output$singular[i] <- isSingular(m)
+              #ggsave(here::here("2_r_scripts/pviol.png"), plot = pviol,
+              #       device = "png", width = 7.8, height = 6.6, units = "in", dpi = 300)
               
-              rs <- suppressWarnings(r.squaredGLMM(m))
-              output$r2m[i] <- rs[1,1]
-              output$r2c[i] <- rs[1,2]
+      # make a similar plot for pre treatment methylation percentage
+          pre_w <- ggplot(data = output2, mapping = aes(x = pre_eff, y = -log(pre_p, 10))) +
+            theme_rrbs() +
+            xlab("Regression coefficient \n of pre- vs. post-treatment \n methylation %") +
+            ylab("-log10(p-value)") +
+            annotate(geom = "text", label = "A", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+            geom_hline(yintercept = -log(c(0.05, 0.01, 0.001, 0.0001)), linetype = "dashed", color = "gray70") +
+            geom_point(size = 0.8, alpha = 0.7, color = "gray20") +
+            ggtitle("Within year sampling") +
+            coord_cartesian(xlim = c(-5.5, 5.5), ylim = c(0, 32)) +
+            theme(axis.title.x = element_text(size = 13))
+          
+          pre_b <- ggplot(data = output2x, mapping = aes(x = pre_eff, y = -log(pre_p, 10))) +
+            theme_rrbs() +
+            xlab("Regression coefficient \n of pre- vs. post-treatment \n methylation %") +
+            ylab("-log10(p-value)") +
+            annotate(geom = "text", label = "B", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+            geom_hline(yintercept = -log(c(0.05, 0.01, 0.001, 0.0001)), linetype = "dashed", color = "gray70") +
+            geom_point(size = 0.8, alpha = 0.7, color = "gray20") +
+            ggtitle("Between year sampling") +
+            coord_cartesian(xlim = c(-5.5, 5.5), ylim = c(0, 32)) +
+            theme(axis.title.x = element_text(size = 13))
+          
+          consistent_meth <- ggarrange(pre_w, pre_b, nrow = 1)
+          saveRDS(consistent_meth, here::here("5_temporary_files/consistent_meth.rds"))
+            
               
-              em_m <- pairs(emmeans(m, ~ treatment), adjust = "none")
-              
-              print(i)
-            }
-          end <- Sys.time()
-              end - start
-              
-          output$cont_est <- rethinking::logistic(output$intercept)
-          output$cort_est <- rethinking::logistic(output$intercept + output$trt_eff)
-          output$cont_min_cort <- output$cont_est - output$cort_est
-          qq <- qvalue(output$trt_p)  
-          output$trt_q <- qq$qvalues
+      # use the significant lists to filter down methylkit object so I can map to genomic features
+            # start by reading in methylkit for AvD at line way above as 'meth2'
+              # get out the location names from meth2 and see which ones match significant list
+                methx <- methylKit::getData(meth2)[, 1:7]
+                methx$location <- paste(methx$chr, methx$start, methx$end, sep = "_")
+                # this one is for within year treatment
+                  sl_within <- sig_list[, c("location", "sig")]
+                  methx2 <- data.frame(location = methx$location, rownum = seq(1, nrow(methx), 1))
+                  sl_within <- plyr::join(sl_within, methx2, "location")
+                  within_sig <- meth2[sl_within$rownum, ]
+                
+                # this one is for between year treatment
+                  sl_between <- sig_listx[, c("location", "sig")]
+                  methx2b <- data.frame(location = methx$location, rownum = seq(1, nrow(methx), 1))
+                  sl_between <- plyr::join(sl_between, methx2b, "location")
+                  between_sig <- meth2[sl_between$rownum, ]
+                
+                # this one is for baseline corticosterone
+                  sl_base <- sig_list_base[, c("location", "base_sig")]
+                  methx2c <- data.frame(location = methx$location, rownum = seq(1, nrow(methx), 1))
+                  sl_base <- plyr::join(sl_base, methx2c, "location")
+                  base_sig <- meth2[sl_base$rownum, ]  
+                  
+                # this one is for induced corticosterone
+                  sl_si <- sig_list_si[, c("location", "si_sig")]
+                  methx2d <- data.frame(location = methx$location, rownum = seq(1, nrow(methx), 1))
+                  sl_si <- plyr::join(sl_si, methx2d, "location")
+                  si_sig <- meth2[sl_si$rownum, ]
+                
+                  
+                             
+          
+          
+### BELIEVE THIS IS ALL OLD BELOW HERE IN THIS SECTION      ----
                   
       # for cort
       #       output_c <- data.frame(location = unique(input$location),
@@ -1044,14 +1421,41 @@
       
       
     
+
+    
 # Genomic features ----
     gene_ob <- readTranscriptFeatures(here::here("7_annotated_genome/tres_annotated.bed"),
                                                   remove.unusual = FALSE,
-                                                  up.flank = 50000,
+                                                  up.flank = 2000,
                                                   down.flank = 0)
     
     # Annotate differences to genomic features
-      gene_an <- suppressWarnings(annotateWithGeneParts(as(meth2, "GRanges"), gene_ob))
+      gene_an <- suppressWarnings(annotateWithGeneParts(as(meth2, "GRanges"), gene_ob)) # all pre-treatment
+      #gene_an2 <- annotate.WithGenicParts(methx_a2, gene_ob)
+      
+    # find percent methylation by region type
+      # meth2_sub <- meth2[gene_an@dist.to.TSS$target.row, ]
+      # ppct <- as.matrix(percMethylation(meth2_sub))
+      # ppc_cpg <- rep(NA, nrow(ppct))
+      # for(i in 1:length(ppc_cpg)){
+      #   ppc_cpg[i] <- mean(as.vector(ppct[i, ]), na.rm = TRUE)
+      # }
+      # region_pct <- data.frame(pct = ppc_cpg,
+      #                          row = gene_an@dist.to.TSS$target.row,
+      #                          region = "intergenic")
+      # check <- gene_an@members
+      # for(i in 1:nrow(region_pct)){
+      #   if(check[i, 3] == 1){region_pct$region[i] <- "intron"}
+      #   if(check[i, 2] == 1){region_pct$region[i] <- "exon"}
+      #   if(check[i, 1] == 1){region_pct$region[i] <- "promoter"}
+      # }
+      # 
+      # ggplot(region_pct, mapping = aes(x = pct, y = region)) +
+      #   geom_density(adjust = 5)
+      
+    # get nearest gene name
+      gene_match <- getAssociationWithTSS(gene_an)
+      
       
     # regional analysis
       promoters <- regionCounts(meth2, gene_ob$promoters)
@@ -1089,9 +1493,49 @@
         oox2 <- subset(oox, oox$type == "promoter")
     
     # Pct meth for regions
-      mean(na.omit(percMethylation(promoters)))
-      mean(na.omit(percMethylation(exons)))
-      mean(na.omit(percMethylation(introns)))
+      sd(na.omit(percMethylation(promoters)))
+      sd(na.omit(percMethylation(exons)))
+      sd(na.omit(percMethylation(introns)))
+      
+    # summarize to make plot of methylation by genomic feature
+      pmeth <- rowMeans(as.matrix(percMethylation(promoters)), na.rm = TRUE)
+      emeth <- rowMeans(as.matrix(percMethylation(exons)), na.rm = TRUE)
+      imeth <- rowMeans(as.matrix(percMethylation(introns)), na.rm = TRUE)
+      
+      df_reg <- data.frame(pct = c(pmeth, emeth, imeth),
+                           reg = c(rep("promoter", length(pmeth)),
+                                   rep("exon", length(emeth)),
+                                   rep("intron", length(imeth))))
+      
+      dfreg2 <- df_reg %>%
+        group_by(reg) %>%
+        summarise(mu = mean(pct), med = median(pct), sem = sd(pct) / sqrt(n()))
+      sum2 <- ggplot(data = df_reg, mapping = aes(x = reg, y = pct)) +
+        geom_boxplot(notch = TRUE, fill = "lightblue") +
+        theme_rrbs() +
+        xlab("") +
+        ylab("Percent methylation") +
+        geom_point(data = dfreg2, inherit.aes = FALSE, mapping = aes(x = reg, y = mu)) +
+        annotate(geom = "text", label = "B", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+        theme(axis.text.x = element_text(size = 11))
+        #theme(axis.text.x = element_text(angle = 30, hjust = 0.95))
+      
+      sum1 <- ggplot(as.data.frame(pc_cpg), mapping = aes(x = pc_cpg)) +
+        geom_histogram(breaks = seq(0, 100, 4), fill = "lightblue", color = "gray40") +
+        theme_rrbs() +
+        coord_cartesian(ylim = c(0, 52000)) +
+        annotate(geom = "text", label = "A", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+        ylab("Number of CpGs") +
+        xlab("Percent methylation")
+      
+      sum_plot <- ggpubr::ggarrange(sum1, sum2, widths = c(2, 1))
+      saveRDS(sum_plot, here::here("5_temporary_files/sum_plot.rds"))
+      
+      # ggplot(data = df_reg, mapping = aes(x = pct)) +
+      #   geom_histogram(bindwidth = 4) +
+      #   facet_wrap(~ reg, ncol = 1)
+      
+      
       
     # Association with tss
       diffAnn <- getAssociationWithTSS(gene_an)
@@ -1099,8 +1543,8 @@
       plotTargetAnnotation(gene_an, precedence = TRUE, main = "differential")
       getFeatsWithTargetsStats(gene_an, percentage = TRUE)
       
-## testing removing based on similarity in repeat samples ----
-      
+## testing removing based on similarity in repeat samples DELETE BELOW HERE?? ----
+    
       #taking from line 303 output
       
       pct_ad2 <- pct_ad %>%
