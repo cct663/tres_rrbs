@@ -957,7 +957,7 @@
                                             output_cor,                    # correlation with cort
                                             output_base, sig_list_base,    # base cort only
                                             output_si, sig_list_si)       # induced cort only
-                saveRDS(model_loop_output, here::here("4_other_output/model_loop_output.rds"))
+                #saveRDS(model_loop_output, here::here("4_other_output/model_loop_output.rds"))
                 model_loop_output <- readRDS(here::here("4_other_output/model_loop_output.rds"))
           
           # make a volcano plot for the four comparisons
@@ -1027,7 +1027,8 @@
               
               
               pviol <- ggpubr::ggarrange(pv1, pv2, pv3, pv4, ncol = 2, nrow = 2)
-              saveRDS(pviol, file = here::here("5_temporary_files/pviol.rds"))
+              #saveRDS(pviol, file = here::here("5_temporary_files/pviol.rds"))
+              pviol <- readRDS(here::here("5_temporary_files/pviol.rds"))
               
               #ggsave(here::here("2_r_scripts/pviol.png"), plot = pviol,
               #       device = "png", width = 7.8, height = 6.6, units = "in", dpi = 300)
@@ -1056,7 +1057,8 @@
             theme(axis.title.x = element_text(size = 13))
           
           consistent_meth <- ggarrange(pre_w, pre_b, nrow = 1)
-          saveRDS(consistent_meth, here::here("5_temporary_files/consistent_meth.rds"))
+          #saveRDS(consistent_meth, here::here("5_temporary_files/consistent_meth.rds"))
+          consistent_meth <- readRDS(here::here("5_temporary_files/consistent_meth.rds"))
             
               
       # use the significant lists to filter down methylkit object so I can map to genomic features
@@ -1529,7 +1531,8 @@
         xlab("Percent methylation")
       
       sum_plot <- ggpubr::ggarrange(sum1, sum2, widths = c(2, 1))
-      saveRDS(sum_plot, here::here("5_temporary_files/sum_plot.rds"))
+      #saveRDS(sum_plot, here::here("5_temporary_files/sum_plot.rds"))
+      sum_plot <- readRDS(here::here("5_temporary_files/sum_plot.rds"))
       
       # ggplot(data = df_reg, mapping = aes(x = pct)) +
       #   geom_histogram(bindwidth = 4) +
@@ -1630,3 +1633,178 @@
           theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank()) +
           xlab("Percent methylation pre-treatment") +
           ylab("Percent methylation post-treatment")
+      
+## Matching CpGs to genes ----
+     # packages for this  
+        # devtools::install_github("PhanstielLab/bedtoolsr")
+        #BiocManager::install("biomaRt")
+        library(bedtoolsr)
+        library(biomaRt)
+      
+      # read in gene list of ZEBR genes matching in our TRES genome
+        tres_genes <- read.delim(here::here("1_raw_data", "genes_TRES_new.txt"))
+        tres_genes2 <- tres_genes
+        tres_genes2$start <- tres_genes$start - 2000   # this is creating the 2kb upstream buffer
+        tres_genes2[tres_genes2$start < 0, "start"] <- 0
+        
+      # read in protein to gene name file stripped from gff
+        gene_key <- read.delim(here::here("1_raw_data", "gene.key.txt"), header = FALSE, sep = " ")
+        gene_key$lab1 <- str_split_fixed(gene_key$V1, pattern = "-", n = 2)[, 2]
+        gene_key$lab2 <- str_split_fixed(gene_key$lab1, pattern = "[.]", n = 2)[, 1]
+        gene_key <- gene_key[, c("lab2", "V2")]
+        colnames(gene_key) <- c("lab2", "gene_name")
+        
+      # extract cpgs to look up from the list i saved earlier
+        sig_between <- model_loop_output[[6]]
+        null_between <- model_loop_output[[5]]
+        
+        sig_within <- model_loop_output[[3]]
+        null_within <- model_loop_output[[2]]
+        
+        sig_base <- model_loop_output[[9]]
+        null_base <- model_loop_output[[8]]
+        
+        sig_stress <- model_loop_output[[11]]
+        null_stress <- model_loop_output[[10]]
+        
+      ## Write a function to extract gene list
+        gene_matcher <- function(label = tres_genes2, gkey = gene_key, input = NA){
+          # wrangle the list of CpGs
+              cpg_list <- as.data.frame(str_split_fixed(input$location, pattern = "_", n = 3))
+              colnames(cpg_list) <- c("contig", "start", "end")
+              
+          # intersect cpgs with zebra finch annotation
+              cpg_intersect <- bedtoolsr::bt.intersect(a = cpg_list, b = label, wa = T, wb = T, loj = F)
+              cpg_intersect$lab2 <- str_split_fixed(cpg_intersect$V7, pattern = "[.]", n = 2)[, 1]
+              
+          # change column labels  to make joining easier
+              cpg_intersect <- cpg_intersect[, c("V1", "V2", "V3", "lab2")]
+              colnames(cpg_intersect) <- c("contig", "start", "end", "lab2")
+            
+          # join label to gene key
+              cpg_genes <- plyr::join(cpg_intersect, gene_key, "lab2", "left", "all")
+              gene_list <- unique(na.omit(cpg_genes$gene_name))
+              gene_list
+        }
+        
+      ## apply function to each list
+        sig_bw_genes <- gene_matcher(input = sig_between)
+        null_bw_genes <- gene_matcher(input = null_between)
+        sig_win_genes <- gene_matcher(input = sig_within)
+        null_win_genes <- gene_matcher(input = null_within)
+        sig_base_genes <- gene_matcher(input = sig_base)
+        null_base_genes <- gene_matcher(input = null_base)
+        sig_str_genes <- gene_matcher(input = sig_stress)
+        null_str_genes <- gene_matcher(input = null_stress)
+        
+        
+      ## find coverage in genes
+        gene_coverage <- function(gene_name = "NR3C1", input = NA, gkey = gene_key, label = tres_genes2){
+          # wrangle the list of CpGs
+              cpg_list <- as.data.frame(str_split_fixed(input$location, pattern = "_", n = 3))
+              colnames(cpg_list) <- c("contig", "start", "end")
+              
+          # add gene name to tres_genes frame
+              tgenes <- as.data.frame(str_split_fixed(label$name, pattern = "[.]", n = 2)[, 1])
+              label$lab2 <- tgenes[, 1]
+              label <- plyr::join(label, gkey, "lab2", "left", "all")
+              
+          # intersect cpg list and gene names
+              # intersect cpgs with zebra finch annotation
+              cpg_intersect <- bedtoolsr::bt.intersect(a = cpg_list, b = label, wa = T, wb = T, loj = F)
+          
+          # join intersection and gene name
+              cpg_genes <- na.omit(data.frame(location = paste(cpg_intersect$V1, cpg_intersect$V2, cpg_intersect$V3, sep = "_"),
+                                      gene_name = cpg_intersect$V9))
+          
+          # output tested cpgs with gene name
+              out_genes <- plyr::join(input, cpg_genes, "location", "left", "all")
+              
+          # perform the regular expression search for gene name
+              out_genes2 <- out_genes[grep(pattern = gene_name, out_genes$gene_name), ]
+              out_genes2 <- out_genes2[!duplicated(out_genes2$location), ]
+              out_genes2
+              
+        }
+        
+        
+### work with GO terms from DAVID ----
+    # these lists are produced using the DAVID online software with teh significant list of genes for each comparison
+    # and using the appropriate background list for each comparison
+        
+        base_go_terms <- read.delim(here::here("8_output_for_DAVID", "base_go_terms.txt"), sep = "\t")
+        str_go_terms <- read.delim(here::here("8_output_for_DAVID", "stress_go_terms.txt"), sep = "\t")
+        win_go_terms <- read.delim(here::here("8_output_for_DAVID", "win_go_terms.txt"), sep = "\t")
+        bw_go_terms <- read.delim(here::here("8_output_for_DAVID", "bw_go_terms.txt"), sep = "\t")
+
+        base_go_terms$term2 <- substr(base_go_terms$Term, 1, 10)
+        str_go_terms$term2 <- substr(str_go_terms$Term, 1, 10)
+        win_go_terms$term2 <- substr(win_go_terms$Term, 1, 10)
+        bw_go_terms$term2 <- substr(bw_go_terms$Term, 1, 10)
+        
+        base_go_terms$dbase <- substr(base_go_terms$Category, 1, 9)
+        str_go_terms$dbase <- substr(str_go_terms$Category, 1, 9)
+        win_go_terms$dbase <- substr(win_go_terms$Category, 1, 9)
+        bw_go_terms$dbase <- substr(bw_go_terms$Category, 1, 9)
+        
+        base_go_terms$db_go <- paste(base_go_terms$dbase, base_go_terms$term2, sep = "_")
+        str_go_terms$db_go <- paste(str_go_terms$dbase, str_go_terms$term2, sep = "_")
+        win_go_terms$db_go <- paste(win_go_terms$dbase, win_go_terms$term2, sep = "_")
+        bw_go_terms$db_go <- paste(bw_go_terms$dbase, bw_go_terms$term2, sep = "_")
+        
+        base_go_terms$fxn <- str_split_fixed(base_go_terms$Term, pattern = "~", n = 2)[, 2]
+        str_go_terms$fxn <- str_split_fixed(str_go_terms$Term, pattern = "~", n = 2)[, 2]
+        win_go_terms$fxn <- str_split_fixed(win_go_terms$Term, pattern = "~", n = 2)[, 2]
+        bw_go_terms$fxn <- str_split_fixed(bw_go_terms$Term, pattern = "~", n = 2)[, 2]
+        
+        base_go_sig <- subset(base_go_terms, base_go_terms$FDR < 0.05)
+        base_go_sig <- subset(base_go_sig, base_go_sig$dbase == "GOTERM_MF" | base_go_sig$dbase == "GOTERM_BP")
+        base_go_sig <- base_go_sig[!duplicated(base_go_sig$db_go), ]
+        
+        str_go_sig <- subset(str_go_terms, str_go_terms$FDR < 0.05)
+        str_go_sig <- subset(str_go_sig, str_go_sig$dbase == "GOTERM_MF" | str_go_sig$dbase == "GOTERM_BP")
+        str_go_sig <- str_go_sig[!duplicated(str_go_sig$db_go), ]
+        
+        win_go_sig <- subset(win_go_terms, win_go_terms$FDR < 0.05)
+        win_go_sig <- subset(win_go_sig, win_go_sig$dbase == "GOTERM_MF" | win_go_sig$dbase == "GOTERM_BP")
+        win_go_sig <- win_go_sig[!duplicated(win_go_sig$db_go), ]
+        
+        bw_go_sig <- subset(bw_go_terms, bw_go_terms$FDR < 0.05)
+        bw_go_sig <- subset(bw_go_sig, bw_go_sig$dbase == "GOTERM_MF" | bw_go_sig$dbase == "GOTERM_BP")
+        bw_go_sig <- bw_go_sig[!duplicated(bw_go_sig$db_go), ]
+        
+        go_table <- data.frame(comparison = c(rep("base", nrow(base_go_sig)),
+                                              rep("stress", nrow(str_go_sig)),
+                                              rep("within", nrow(win_go_sig)),
+                                              rep("between", nrow(bw_go_sig))),
+                               GO_term = c(base_go_sig$term2, str_go_sig$term2, win_go_sig$term2, bw_go_sig$term2),
+                               FDR = c(base_go_sig$FDR, str_go_sig$FDR, win_go_sig$FDR, bw_go_sig$FDR),
+                               Function = c(base_go_sig$fxn, str_go_sig$fxn, win_go_sig$fxn, bw_go_sig$fxn))
+        go_table$FDR2 <- format(go_table$FDR, digits = 3)
+        saveRDS(go_table, here::here("4_other_output", "go_table.rds"))
+        
+# pull out mc2r from stress and within treatment ----
+        
+      # stress_mc2_locs <- c("Contig3872_1367562_1367562", "Contig3872_1367564_1367564", "Contig3872_1367688_1367688",
+      #                      "Contig3872_1367699_1367699", "Contig3872_1367708_1367708", "Contig3872_1367725_1367725")
+      # within_mc2_locs <- c("Contig3872_1367688_1367688", "Contig3872_1367699_1367699", "Contig3872_1367708_1367708",
+      #                      "Contig3872_1367725_1367725")
+      # 
+      # # Section above making organized cpg lists must be run first to produce 'comb_pp' and 'nat_cort'
+      #   mc2r_str <- subset(nat_cort, nat_cort$location %in% stress_mc2_locs)
+      #   mc2r_win <- subset(comb_pp, comb_pp$location %in% within_mc2_locs)
+      #   
+      #   mc2r_win2 <- mc2r
+        
+        str_mc2_sig <- subset(nat_cort, nat_cort$location == "Contig3872_1367688_1367688")
+        mc2r_plot <- ggplot(str_mc2_sig, mapping = aes(x = pct_meth * 100, y = s_cort)) +
+          geom_point(mapping = aes(size = coverage)) +
+          geom_smooth(method = "lm", color = "orange", fill = "orange") +
+          theme_rrbs() +
+          coord_cartesian(xlim = c(0, 100)) +
+          guides(color = "none", fill = "none") +
+          xlab("Percent methylation") +
+          ylab("Stress-induced \n corticosterone (ng/ml)")
+        
+        saveRDS(mc2r_plot, here::here("4_other_output", "mc2r_plot.rds"))
+        

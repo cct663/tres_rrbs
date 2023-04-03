@@ -1,5 +1,5 @@
 ---
-title: "Natural variation and experimental elevation of corticosterone are associated with immediate and lasting differences in DNA methylation in a wild bird"
+title: "Natural and experimental corticosterone are associated with changes to DNA methylation in a wild bird"
 author: 
   - Conor C. Taff
   - Sabrina M. McNew
@@ -8,23 +8,22 @@ author:
 header-includes:
   - \usepackage[font={footnotesize}, labelfont={bf}]{caption}
   - \newcommand{\beginsupplement}{\setcounter{table}{0}  \renewcommand{\thetable}{S\arabic{table}} \setcounter{figure}{0} \renewcommand{\thefigure}{S\arabic{figure}}}
-  #- \usepackage{setspace}\doublespacing
-  #- \usepackage{lineno}\linenumbers
 fontsize: 12pt
 output: 
-  bookdown::pdf_document2:
-      number_sections: FALSE
-      toc: FALSE
-      extra_dependencies: ["flafter"]
   bookdown::word_document2:
       number_sections: FALSE
       toc: FALSE
       extra_dependcies: ["flafter"]
+  bookdown::pdf_document2:
+      number_sections: FALSE
+      toc: FALSE
+      extra_dependencies: ["flafter"]
   bookdown::html_document2:
       number_sections: FALSE
       toc: TRUE
 bibliography: references.bib
 csl: molecular-ecology.csl
+always_allow_html: true
 ---
 
 ```{r setup, include = FALSE, echo = FALSE}
@@ -33,21 +32,21 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 \raggedright
 
-## ABSTRACT
+## ABSTRACT (250 words)
 
+In many animals the prior experiences influence the physiological response to subsequent challenges. One mechanism that might facilitate the calibration of stress responses is changes to DNA methylation that encode prior experiences and mechanistically influence future responses. While this mechanism is well described for some model systems during early development, there is growing evidence that similar effects might occur even in adulthood and in animals living under natural conditions. We studied changes to genome wide DNA methylation in adult female tree swallows (*Tachycineta bicolor*) using reduced representation bisulfite sequencing coupled with measurements of natural corticosterone and experimental applications of brief spikes in corticosterone that simulate the hormonal acute stress response. We found evidence that natural variation in corticosterone was correlated with patterns of DNA methylation and that corticosterone dosing causally influenced methylation on short (1-2 weeks) and long (1 year) time scales. Repeated sampling also demonstrated stable long-term differences in DNA methylation throughout the genome. Stress-induced corticosterone was associated with methylation of the MC2R gene, which encodes the adrenocorticotropic hormone receptor, but the other changes we identified did not have clear links to functional regulation of the stress response. Our results are consistent with a growing body of work suggesting that methylation can act as a record of prior experiences that may enable flexible adjustment of the response to subsequent challenges. Uncovering the mechanism(s) underlying endocrine flexibility has important implications for understanding when and how individuals are able to successfully adjust the stress response to cope with changing conditions.
 
-
-*Keywords: reduced representation bisulfite sequencing, stress, endocrinology, carryover effects*
+*Keywords: reduced representation bisulfite sequencing, stress, endocrinology, carryover effects, tree swallow*
 
 ## INTRODUCTION
 
-Wild animals regularly encounter challenging conditions that require rapid behavioral and physiological responses. In vertebrates, the glucocorticoid mediated stress response plays an essential role in allowing animals to successfully avoid or tolerate stressors [@sapolsky2000; @wingfield1998]. While an appropriate response is beneficial [@wingfield1998], an inappropriate or prolonged elevation of glucocorticoids can result in a variety of well described costs [@korte2005]. Given the way that these benefits and costs can change over time or between contexts, flexible regulation of the acute stress response may itself be an important determinant of coping ability [@taff2016; @hau2016; @wada2014]. Measuring these within-individual reaction norms in endocrine traits is difficult, but has the potential to clarify why some individuals succeed when others fail during challenging conditions. However, a full understanding of how flexibility contributes to coping ability also requires identifying the mechanism(s) that contribute to flexible adjustment of the acute stress response. 
+Wild animals regularly encounter challenging conditions that require rapid behavioral and physiological responses. In vertebrates, the glucocorticoid mediated stress response plays an essential role in allowing animals to successfully avoid or tolerate stressors [@sapolsky2000; @wingfield1998]. While an appropriate response is beneficial [@wingfield1998], an inappropriate or prolonged elevation of glucocorticoids can result in a variety of well described costs [@korte2005]. Given the way that these benefits and costs can change over time or between contexts, flexible regulation of the acute stress response may itself be an important determinant of coping ability [@taff2016; @hau2016; @wada2014]. A full understanding of how flexibility contributes to coping ability also requires identifying the mechanism(s) that contribute to flexible adjustment of the acute stress response. 
 
-Changes in DNA methylation in response to prior challenges represent one mechanism that could play a role in the calibration of stress response systems. Epigenetic modification by DNA methylation can alter phenotypes by making genes or promoters more or less accessible for transcription [@lea2018; @sepers2019; @anastasiadi2018]. It is well known that early life experiences can have profound programming effects on DNA methylation patterns that often persist throughout the lifetime [e.g., @mcgowan2009]. For example, classic work in lab rodents demonstrates that early life experiences regulate methylation of the gene producing the glucocorticoid receptor, which results in lifelong changes to glucocorticoid secretion in response to challenges [@liu1997; @weaver2004]. A growing number of studies also demonstrate early life programming of DNA methylation patterns in wild populations resulting from dominance hierarchies [@laubach2019], brood size [@jimeno2019; @sheldon2018], temperature [@metzger2017], or landscape features [@kartzinel2022].
+Changes in DNA methylation in response to prior challenges represent one mechanism that could play a role in the calibration of stress response systems. Epigenetic modification by DNA methylation can alter phenotypes by making genes or promoters more or less accessible for transcription [@lea2018; @sepers2019; @anastasiadi2018]. Early life experiences can have profound programming effects on DNA methylation patterns that often persist throughout the lifetime [e.g., @mcgowan2009]. For example, classic work in lab rodents demonstrates that early life experiences regulate methylation of the gene producing the glucocorticoid receptor, which results in lifelong changes to glucocorticoid secretion in response to challenges [@liu1997; @weaver2004]. A growing number of studies also demonstrate early life programming of DNA methylation patterns in wild populations resulting from dominance hierarchies [@laubach2019], brood size [@jimeno2019; @sheldon2018], temperature and weather [@metzger2017; @rubenstein2016], or landscape features [@kartzinel2022].
 
-While they are less well documented, experiences during adulthood can also result in changes in DNA methylation and these adjustments can occur rapidly [@metzger2017; @bentz2021]. For example, brief periods of experimental competition and aggression in tree swallows (*Tachycineta bicolor*) resulted in altered DNA methylation of brain regions associated with hormone signaling, suggesting a priming effect in preparation for future aggression [@bentz2021]. Conceptual models of the stress response have long recognized that the sequence, frequency, duration, and intensity of stressors should change the optimal behavioral and physiological response [@romero2009]. Yet it is often unclear how the experience of challenges during adulthood would be biologically encoded to alter responses to future challenges. Altered DNA methylation is a promising mechanism because i) it can change rapidly even during adulthood, ii) it can persist over moderate to long time scales, iii) it has been shown to change with challenging experiences, and iv) it may play a direct role in physiological responses to future challenges. It has not yet been demonstrated, however, whether brief increases in corticosterone as an adult causally influence methylation patterns.
+While they are less well documented, experiences during adulthood can also result in changes to DNA methylation and these adjustments can occur rapidly [@metzger2017; @bentz2021]. For example, brief periods of experimental competition and aggression in tree swallows (*Tachycineta bicolor*) resulted in altered DNA methylation of brain regions associated with hormone signaling, suggesting a priming effect in preparation for future aggression [@bentz2021]. Conceptual models of the stress response have long recognized that the sequence, frequency, duration, and intensity of stressors should change the optimal behavioral and physiological response [@romero2009]. Yet it is often unclear how the experience of challenges during adulthood would be biologically encoded to alter responses to future challenges. Altered DNA methylation is a promising mechanism because i) it can change rapidly even during adulthood, ii) it can persist over moderate to long time scales, iii) it has been shown to change with challenging experiences, and iv) it may play a direct role in physiological responses to future challenges. It has not yet been demonstrated, however, whether brief increases in corticosterone as an adult causally influence methylation patterns.
 
-We studied covariation between DNA methylation and corticosterone (the primary avian glucocorticoid) in tree swallows using both observational and experimental approaches. In this population we previously found that genome wide methylation predicts resilience to experimental challenges [@taff2019] and that brief experimental increases in corticosterone have lingering effects on behavior and performance [@vitousek2018; @taff2018]. However, corticosterone and methylation have not been studied together and the methylation methods used previously did not allow for base-pair level resolution of changes in methylation status. Here, we used reduced representation bisulfite sequencing (RRBS) and a newly improved reference genome assembled for this study to examine genome wide patterns of DNA methylation at high resolution. We first assessed covariation between methylation and natural variation in corticosterone regulation during an acute stress response. Next, we experimentally simulated a series of acute corticosterone responses using a non-invasive dosing procedure [@vitousek2018] and compared DNA methylation to controls to determine whether brief increases in corticosterone resulted in altered DNA methylation at either short (1-2 weeks) or long (1 year) timescales. 
+We studied covariation between DNA methylation and corticosterone (the primary avian glucocorticoid) in tree swallows using both observational and experimental approaches. In this population we previously found that genome wide methylation predicts resilience to experimental challenges [@taff2019] and that brief experimental increases in corticosterone have lingering effects on behavior and performance [@vitousek2018; @taff2018]. Here, we used reduced representation bisulfite sequencing (RRBS) and a newly improved reference genome assembled for this study to examine genome wide patterns of DNA methylation at high resolution. We first assessed covariation between methylation and natural variation in corticosterone regulation during an acute stress response. Next, we experimentally simulated a series of acute corticosterone responses using a non-invasive dosing procedure [@vitousek2018] and compared DNA methylation to controls to determine whether brief increases in corticosterone resulted in altered DNA methylation at either short (1-2 weeks) or long (1 year) timescales. 
 
 Given previous work demonstrating a correlation between coping ability and both genome-wide methylation [@taff2019] and natural variation in rapid corticosterone regulation [@vitousek2018f], we predicted that natural variation in corticosterone (baseline and stress-induced increase) would be associated with DNA methylation. However, a correlation here could arise through early life programming, prior activation of the acute corticosterone response, or any conditions that impact the regulation of both methylation and corticosterone (e.g., body condition). In contrast, for the experimental manipulation we predicted that differences in DNA methylation between control and treatment groups would only be present if brief increases in corticosterone have a causal effect on altering methylation patterns. We assessed the time course and persistence of any such changes using comparisons 1-2 weeks after treatments and 1 year after treatments. If methylation changes play a role in altering future corticosterone secretion then we expected to find more differences near genes and promoters associated with endocrine regulation. 
 
@@ -55,7 +54,7 @@ Given previous work demonstrating a correlation between coping ability and both 
 
 We studied tree swallows breeding at field sites in and around Ithaca, New York, U.S.A. from April to July of 2015 and 2016. This population of tree swallows has been continuously studied since 1986 and we followed well established monitoring protocols [for details see @winkler2020]. In 2015, adult females were captured on day 6 to 7 after the beginning of incubation and again on day 3 to 7 after eggs had hatched. In 2016, any returning females were captured on day 6 to 7 of incubation. At each capture we collected blood samples (< 70$\mu$l each) to measure baseline (< 3 minutes) and stress induced (30 minutes) corticosterone [@vitousek2018]. We also collected a set of standardized morphological measurements and monitored reproductive success [@vitousek2018]. All birds received a unique USGS aluminum band and passive integrated transponder (PIT) tag if they were not previously banded.
 
-Between the first and second capture in year one, females were randomly assigned to either a control or experimental treatment group. In the experimental group, we simulated a brief spike in corticosterone once per day on five days between the two captures. To accomplish this, we applied two 60 $\mu$l doses of corticosterone dissolved in DMSO gel one hour apart to a fake egg anchored in the nest cup at a randomly chosen time during the day when females were absent from the nest. Upon returning, females incubated the clutch and absorbed the corticosterone across the skin on their brood patch. For the purposes of this study, we considered females as part of the corticosterone treatment group if they received any of the three dose concentrations described in Vitousek et al. 2018 (high = 4 mg ml ^-1^ corticosterone once plus sham once per day; low = 2 mg ml ^-1^ once plus sham once per day; long = 2 mg ml ^-1^ twice per day).
+Between the first and second capture in year one, females were randomly assigned to either a control or experimental treatment group (experiment schematic and samples sizes at each stage are shown in Figure \@ref(fig:exp-fig)). In the experimental group, we simulated a brief spike in corticosterone once per day on five days between the two captures. To accomplish this, we applied two 60 $\mu$l doses of corticosterone dissolved in DMSO gel one hour apart to a fake egg anchored in the nest cup at a randomly chosen time during the day when females were absent from the nest. Upon returning, females incubated the clutch and absorbed the corticosterone across the skin on their brood patch. For the purposes of this study, we considered females as part of the corticosterone treatment group if they received any of the three dose concentrations described in Vitousek et al. 2018 (high = 4 mg ml ^-1^ corticosterone once plus sham once per day; low = 2 mg ml ^-1^ once plus sham once per day; long = 2 mg ml ^-1^ twice per day).
 
 We previously validated that this dosing method results in a brief (< 180 minutes) increase in corticosterone within the range of natural acute corticosterone responses [@vitousek2018]. Control nests received either no manipulation or a sham control in which they were dosed as described above but with DMSO gel only with no corticosterone added. We previously found no difference in physiology, behavior, reproductive success, or survival between control and sham control birds receiving this treatment [@vitousek2018; @taff2018] and we combined both control groups in the analyses described here. 
 
@@ -65,7 +64,7 @@ For this study, we improved upon a previously published reference genome sequenc
 
 *Sample processing*
 
-Blood samples collected in the field were immediately stored on ice in a cooler and processed in the lab within 3 hours of capture. Red blood cells were separated from plasma by centrifugation and added to 1 mL of ice cold cryopreservation buffer [90% newborn calf serum, 10% DMSO, @haussmann2008]. Samples were then frozen at a constant cooling rate in a Mr. Frosty container with isopropyl alcohol and stored at -80$^\circ$ C until further processing. Cryopreserved blood samples were thawed and DNA was extracted using the DNeasy Blood & Tissue spin column extraction kits according to the manufacturer's protocol. 
+Blood samples collected in the field were immediately stored on ice in a cooler and processed in the lab within 3 hours of capture. Red blood cells were separated from plasma by centrifugation and added to 1 mL of ice cold cryopreservation buffer [90% newborn calf serum, 10% DMSO, @haussmann2008]. Samples were then frozen at a constant cooling rate in a Mr. Frosty container with isopropyl alcohol and stored at -80$^\circ$ C until further processing. Cryopreserved blood samples were thawed and DNA was extracted using the DNeasy Blood & Tissue spin column extraction kits according to the manufacturer's protocol (Qiagen Sciences Incorporated). 
 
 *Reduced representation bisulfite sequencing*
 
@@ -77,28 +76,53 @@ Raw sequence data were first processed with `Trim Galore!` using the default RRB
 
 *Data analysis*
 
-Output data from the sequence processing described above was analyzed in R version 4.1.1 [@rcite]. We initially processed the aligned sequence data using `MethylKit`, which includes a variety of functions for working with bisulfite sequencing data [@akalin2012]. Using `MethylKit`, we extracted the number of total aligned reads and number of methylated or unmethylated reads for each CpG site. 
+Output data from the sequence processing described above was analyzed in R version 4.1.1 [@rcite]. We processed the aligned sequence data using `MethylKit` [@akalin2012]. Using `MethylKit`, we extracted the number of total aligned reads and number of methylated or unmethylated reads for each CpG site. 
 
-For analyses of corticosterone and treatment associations, we filtered these CpGs to include only those that met the following criteria. First, we required a minimum coverage of 10 reads per sample to retain data for that sample at a given CpG. We further filtered the dataset to remove any CpGs that were mostly invariant (i.e., more than half of samples had methylation percentage of 0 or 100%) as well as CpGs that had extremely low variation (SD less than 5% across all samples). For models comparing treatment effects, we required that females have data at a given CpG from both pre and post treatment sampling points to be included. For basic descriptions of methylation patterns, we used all CpGs that had 10 reads or more in the pre-treatment samples.
+For analyses of corticosterone and treatment associations, we filtered these CpGs to include only those that met the following criteria: First, we required a minimum coverage of 10 reads per sample to retain data for that sample at a given CpG. We further filtered the dataset to remove any CpGs that were mostly invariant (i.e., more than half of samples had methylation percentage of 0 or 100%) as well as CpGs that had extremely low variation [SD less than 5% across all samples, @husby2022; @lundregan2022]. For models comparing treatment effects, we required that females have data at a given CpG from both pre and post treatment sampling points to be included. For basic descriptions of methylation patterns, we used all CpGs that had 10 reads or more in the pre-treatment samples.
 
 The built in differential methylation techniques in `MethylKit` are designed for two group comparisons with limited flexibility in modeling options. Because we had repeated measures before and after treatments for both groups, we could not specify the necessary models within `MethylKit` itself. Therefore, we exported and combined the filtered CpG records for all groups so that we could fit generalized linear mixed models (GLMMs) for each CpG site [as in @lindner2021] using the `glmer` function in R package `lme4` [@bates2014]. We fit a separate set of models for natural corticosterone variation (baseline or stress-induced), within-year treatments, and between-year treatments. Each of these datasets were constructed separately since they included different subsets of both individual birds and of CpGs that met the criteria described above. 
 
-For natural variation in corticosterone, we included only the pre-treatment samples from the first year of study. Using these samples, we fit a GLMM for each CpG with the number of methylated and unmethylated reads as the binomial response variable. We fit this set of models separately with baseline and stress-induced corticosterone as the single continuous predictor variable. The models included a random effect for female identity to account for repeated sequencing of the same CpG sites within each female. We excluded the results for any models that failed to converge because we could not reliably estimate effects in those cases.
+For natural variation in corticosterone, we included only the pre-treatment samples. Using these samples, we fit a GLMM for each CpG with the number of methylated and unmethylated reads as the binomial response variable. We fit this set of models separately with baseline and stress-induced corticosterone as the single continuous predictor variable. The models included a random effect for female identity to account for repeated sequencing of the same CpG sites within each female. We excluded the results for any models that failed to converge because we could not reliably estimate effects in those cases.
 
 For within year and between year comparisons after treatments, we fit a single GLMM for each included CpG with the number of methylated and unmethylated reads as the binomial response variable. Predictors included pre-treatment methylation percentage at the CpG being modeled, a fixed effect of treatment (control vs. corticosterone), and a random effect for female identity. In each model, significance of the comparison between control and corticosterone treated birds was assessed using the `emmeans` package in R [@emmeans]. We also evaluated the stability of methylation within individuals in these models by summarizing the regression coefficient of pre-treatment methylation on post-treatment methylation.
 
-We accounted for multiple comparisons in each of these analyses by adjusting all p-values using the q-value approach implemented by the `qvalue` package in R with the false discovery rate set at 0.05 [@qvalue]. We only report and interpret estimates with q-values < 0.05. The complete set of R code and sample data is available on GitHub and will be publicly archived upon acceptance (www.github.com/cct663/tres_rrbs). Raw sequence data from RRBS is available at (**I guess this can go to NCBI?**). The assembled genome used for sequence alignment is available at (**??**). 
+We accounted for multiple comparisons in each of these analyses by adjusting all p-values using the q-value approach implemented by the `qvalue` package in R with the false discovery rate set at 0.05 [@qvalue]. We only report and interpret estimates with q-values < 0.05. 
 
-**Differential results tested to genes by...**
+*Annotation of differentially methylated CpGs*
+
+After identifying CpGs that were significantly associated with either natural corticosterone or experimental treatment with corticosterone, we identified genes associated with each CpG. We used the `bedtoolsr` package to select genes that had a significant CpG either within the gene body or within 2 kb upstream of the transcription start site [@bedtoolsr]. We generated separate lists of genes associated with CpGs for baseline corticosterone, stress-induced corticosterone, within-year treatment effects, and between-year treatment effects. For each of these comparisons we also generated a complete list of genes associated with all of the CpGs that passed the filtering criteria described above to be used as a null background list (see below).
+
+Starting with the list of genes associated with each comparison set, we used the DAVID functional annotation tool [@DAVID] to test whether our genes were enriched in any molecular functions or biological processes in the Gene Ontology knowledgebase [@ashburner2000; @goterms]. For each comparison we used the custom background list generated above. This background list is important for interpretation because we were only able to test CpGs near a subset of genes in each comparison (number of genes included in testing for baseline corticosterone = 4,143; stress-induced corticosterone = 4,146; within-year treatment = 2,913; between-year treatment = 452). Using DAVID we identified a set of GO terms associated with biological processes or molecular functions that were over represented in the list of significant CpGs compared to the background list for that comparison [@goterms]. We filtered this list to include only GO terms with p-values < 0.05 after applying a false discovery rate correction. We initially visualized the GO terms for each comparison using REVIGO [@revigo]; however, our study identified a relatively small number of GO terms and no clearly identifiable clusters of terms were identified in REVIGO. Therefore, we report the complete list of genes and GO terms associated with CpGs in each comparison
+
+*Data and code availability*
+
+The complete set of bioinformatic processing scripts, R code, and sample data is available on GitHub and will be publicly archived upon acceptance (www.github.com/cct663/tres_rrbs). Raw sequence data from RRBS is available at (**I will upload to NCBI SRA**). The assembled genome used for sequence alignment is available at (**Leo where should we put this?**). 
+
+```{r exp-fig, warning = FALSE, message = FALSE, echo = FALSE, out.width = "100%", fig.align = "left", fig.cap = "Schematic illustration of the experimental treatment and samples collected. Models comparing natural corticosterone to DNA methylation used pre-treatment samples (A). After treatments were applied (B), models testing for within-year effects of treatment used post-treatment samples (C), while controlling for initial methylation (A). Models testing for between-year effects used post-treatment samples (D), while controlling for initial methylation (A). See text for description of birds included in treatment and control groups."}
+
+knitr::include_graphics("experiment_fig.png")
+
+```
 
 ## RESULTS
 
 *General methylation patterns*
 
-Our process resulted in 9.8 $\pm$ 4.3 million (SD) total reads per sample (Figure \@ref(fig:read-summary)). Across all samples, we were able to align 51.1% of the total reads produced, which is comparable to several recent studies in wild birds [e.g., @makinen2019]. Spiked controls in each sample indicated that our bisulfite conversion worked efficiently and within the recommended kit parameters (conversion of methylated control sites = 1.9% $\pm$ 1.4; conversion of unmethylated control sites = 99.5% $\pm$ 0.6). 
+Our process resulted in 9.8 $\pm$ 4.3 million (SD) total reads per sample (Figure \@ref(fig:read-summary)). Across all samples, we were able to align 51.1% of the total reads produced, which is comparable to several recent studies in wild birds [e.g., @makinen2019; @watson2021]. Spiked controls in each sample indicated that our bisulfite conversion worked efficiently and within the recommended kit parameters (conversion of methylated control sites = 1.9% $\pm$ 1.4; conversion of unmethylated control sites = 99.5% $\pm$ 0.6). 
+
+```{r no-include, echo = FALSE, message = FALSE, warning = FALSE}
+
+# note on alignment percent for bird RRBS
+  # Markinen 2019, great tit reference genome, 52 +/- 2% mapping, suggest mapping lower because of short reads or incomplete reference genome
+  # Derks et al, great tit reference genome, 52% (brain) and 64% (blood) mapping
+  # watson evolutionary applications, great tit 54%
+  # Lundregan: biorxiv, house sparrow, 81% alignment (others to short or map to multiple regions)
+  # vast majority i looked at don't list their alignment percentage
+
+```
+
 
 Among 45 pre-treatment samples, we had sufficient coverage to estimate methylation at 148,167 CpGs. In total, the average percentage methylation across all sites was 35.5% $\pm$ 34.0 with a wide distribution (Figure \@ref(fig:sum-plot)A). After assigning CpGs hierarchically to promoter (within 2kb upstream of a TSS) > exon > intron, we found that 12.1% of sites were in promoters, 7.9% in exons, 11.8% in introns, and 68.1% in intergenic regions. At the level of genomic features, promoters had the lowest methylation (median = 5.3%, mean $\pm$ SEM = 20.5% $\pm$ 0.5), introns had intermediate methylation (median = 43.5%, mean $\pm$ SEM = 41.0% $\pm$ 0.5), and exons had the highest methylation (median = 54.3%, mean $\pm$ SEM = 46.7% $\pm$ 0.7). However, each of these features had a wide distribution of methylation percentages across different genes (Figure \@ref(fig:sum-plot)B).
-
 
 *Association between natural or experimental corticosterone and methylation*
 
@@ -121,36 +145,62 @@ mod_tab <- data.frame(comparison = c("Baseline corticosterone", "Stress-induced 
                       CpGs = c(78143, 78027, 48070, 6787),
                       n = c("29.2 +/- 7.0", "30.6 +/- 7.3", "24.5 +/- 8.8", "9.8 +/- 1.5"),
                       #sd = c(7.0, 7.3, 8.8, 1.5),
-                      sig = c(116, 356, 111, 49))
+                      sig = c(116, 356, 111, 49),
+                      genes = c(32, 176, 52, 16),
+                      go = c(14, 22, 2, 27))
 
+library(magrittr)
 knitr::kable(mod_tab, col.names = c("Comparison", "CpGs evaluated", "Individuals per comparison",
-                                    "Significant CpGs"),
-             caption = "Summary of GLMMs for each comparison. One model was fit for each CpG site; see text for description of models.",
-             align = c("l", "r", "r", "r"))
+                                    "Significant CpGs", "Associated Genes", "Significant GO terms"),
+             caption = "Summary of GLMMs for each comparison with the number of CpGs significantly correlated with corticosterone or differentially methylated between treatment groups. One model was fit for each CpG site; see text for description of models.",
+             align = c("l", "r", "r", "r", "r", "r")) %>%
+  kableExtra::kable_styling(full_width = TRUE) %>%
+  kableExtra::kable_styling(latex_options = "striped")
+  
 
 ```
 
-*Genes associated with differentially methylated CpGs*
+*Association between differentially methylated CpGs and genes*
 
+We found that CpGs that were significantly associated with baseline corticosterone or stress-induced corticosterone were located in or near a total of of 32 and 176 identifiable genes, respectively (Table \@ref(tab:gene-table)). When comparing differentially methylated CpGs after treatment effects, within-year and between year CpGs were located in or near 52 and 16 genes, respectively (Table \@ref(tab:gene-table)). None of these genes were shared between comparisons, but because of our filtering process many were only tested in a subset of possible comparisons (i.e., the background set of possible genes tested differed for each comparison).
 
+In examining the function of genes identified in this process, only one was obviously directly connected to regulation of the hypothalamic-pituitary-adrenal (HPA) axis. We found that individuals with higher stress-induced corticosterone in the observational dataset had higher methylation at a CpG associated with the MC2R gene, which is responsible for making the ACTH receptor (Figure \@ref(fig:acth-fig)). Unfortunately, several other genes known to be associated with the HPA axis (e.g., CRH, CRHR1, FKBP5) did not have any CpGs near them in the background set, so we could not test for differences associated with these genes.
+
+```{r acth-fig, echo = FALSE, message = FALSE, warning = FALSE, fig.height = 4, fig.width = 5, fig.cap = "Percent methylation in relation to stress-induced corticosterone at the CpG near the MC2R gene that was significantly associated with corticosterone. Size of circles indicates sequence coverage for each sample. Trendline and confidence interval is shown for illustration but significance was assessed in the binomial GLMM described in the text."}
+
+mc2r_plot <- readRDS(here::here("4_other_output", "mc2r_plot.rds"))
+mc2r_plot + ggplot2::ylab("Stress-induced \n corticosterone (ng/ml)")
+# fixing the y axis label here that i had wrong in the main code
+
+```
+
+*GO term analysis*
+
+Using the gene lists from Table \@ref(tab:gene-table) as input, we identified GO terms that were significantly associated with each comparison. With the false discovery rate set at 0.05, we identified 14 GO terms associated with baseline corticosterone, 22 terms associated with stress-induced corticosterone, 2 terms for the within-year treatment effect, and 27 terms for the between-year treatment effect (Table \@ref(tab:go-table)). None of these lists resulted in any clear clustering of processes using the REVIGO visualization tool and many terms were repetitive and attributable to the same few gene associations. 
+
+Baseline corticosterone was associated with photoreceptor activity and response to light, which was primarily driven by opsin and rhodopsin gene associations (OPN1SW, RHO, LWS). Stress-induced corticosterone was associated with a wider range of processes connected to a larger set of genes. These included a variety of cell signaling and receptor pathways, such as the ACTH association described above (MC2R). 
+
+Differentially methylated CpGs for within-year corticosterone treatment were only related to two GO terms associated with structural cell components and attributable to genes of unknown function. Between-year corticosterone treatment was associated with a variety of GO terms having to do primarily with transmembrane receptor signaling, but nearly all of these terms were selected from the same set of gene associations (BMPR1A and B, ACVR1, and TGFBR1). 
 
 ## DISCUSSION
 
-need for pre-post comparison-remarkable stability in individuals
-rrbs promising, less used in birds
-causal effects of cort on methylation -> suggest mechanism to link experience to subsequent regulation
-need to understand mechanisms behind flexibility in cort regulation in order to predict limits to plasticity
+We found that natural variation in corticosterone is correlated with DNA methylation and that brief, experimental increases in corticosterone causally influence DNA methylation in a wild bird living under natural conditions. Importantly, regulation of DNA methylation in response to corticosterone occurred rapidly in adults and resulted in detectable changes at least one year after treatment. Our repeated sampling revealed that these rapid changes are set against a background of individual differences and long term stability in methylation patterns. Taken together, these results support the idea that DNA methylation may act as a mechanism linking the prior experience of stressors, both during development and adulthood, to subsequent regulation of the acute stress response. Rapid endocrine flexibility and adaptive calibration of the stress response have emerged as key determinants of resilience to challenges [@taff2016; @grindstaff2022; @hau2015] and understanding the mechanistic basis of these patterns is an important step in predicting when flexibility is adequate or insufficient to cope with changing conditions.
 
-other methylations studies weaknesses
+Our results add to the growing recognition of bi-directional links between coping ability and DNA methylation. While this relationship is well known in laboratory based model systems [@liu1997; @weaver2004] the potential importance of methylation changes due to environmental stressors and subsequent coping ability as a consequence of methylation have only recently been explored in wild animals. In wild mammals, early results suggest patterns similar to those seen in laboratory rodents. For example, early life maternal care and social connections in spotted hyenas (*Crocuta crocuta*) predict DNA methylation and glucocorticoid regulation as an adult [@laubach2019; @laubach2021]. Similar effects can play out in adulthood; for example, in savannah baboons (*Papio cynocephalus*) high social status as an adult is associated with more rapid changes to DNA methylation (epigenetic aging) as a consequence of the social stress that accompanies high status [@anderson2021]. Our results are consistent with the results derived from lab rodents, wild mammals, and a growing number of studies in wild birds [@rubenstein2016; @lindner2021], suggesting that flexible adjustment of methylation may be a general mechanism by which prior experiences of stressors are encoded in order to modulate future responses to challenges. 
 
-limitation of blood born methylation
+While there has been a rapid increase in studies of methylation in wild birds in recent years [e.g., @rubenstein2016; @kartzinel2022; @makinen2019], relatively few studies have sampled the same individuals multiple times as adults. Our study design allowed us to assess the stability of genome wide DNA methylation within individuals. We found that many CpGs that we interrogated had large between individual differences in methylation and that those differences were typically stable even in samples collected one year apart. Compared to these individual differences, flexible changes in methylation were relatively smaller and detectable at fewer CpGs. The stable individual differences that we detected might represent the consequences of early life conditions [e.g., @laubach2019; @jimeno2019; @sheldon2018]. For example, early life climate conditions are related to lifelong methylation of the glucocorticoid receptor gene in superb starlings [*Lamprotornis superbus*, @rubenstein2016]. We could not assess the possibility of a similar pattern in our study because we did not have any information on early life conditions for our birds. Regardless of the source of these initial differences, our results clearly demonstrate that detecting subtle adjustments of methylation in adulthood to any treatment of interest will often require accounting for pre-treatment methylation.
 
-much less power and sample size for between year, but still some evidence of persistent changes
+At this point, it is somewhat unclear what functional consequences most of the specific methylation changes that we detected might have. We did find that stress-induced corticosterone was correlated with methylation of a CpG associated with the MC2R gene, which encodes the ACTH receptor. Individuals with a more robust stress response had higher methylation at this CpG. Higher methylation is expected to be associated with lower gene expression [@anastasiadi2018; @lea2018], suggesting that individuals with a more robust corticosterone response might have lower ACTH receptor expression. It isn't clear why lower ACTH receptor expression would result in higher stress-induced corticosterone, but because regulation of the HPA axis can occur at multiple levels with bi-directional feedback, the result may instead reflect a downregulation of ACTH receptor expression in response to robust activation of other components of the HPA axis. Pairing RRBS with gene expression measurements and comparisons in different tissues would be helpful to understand these patterns [e.g., @hukkanen2023]. 
 
+In contrast to stress-induced corticosterone, none of the genes or GO terms associated with baseline-corticosterone or treatments had clear connections to HPA axis regulation. We previously found that non-specific, genome-wide methylation predicts stress resilience to experimental challenges in this population [@taff2019]. Thus, the differences that we detected might reflect large scale regulation of methylation rather than targeted regulation of sites with specific functional consequences. Alternatively, some of the changes that we detected might have functional effects on stress response calibration that are not obvious from the known effects of those genes.
+
+Another reason that we failed to find clear links between changes in DNA methylation and genes associated with the stress response may have to do with limitations of our approach. An advantage of RRBS is that it does not rely on pre-selecting candidate genes, but a disadvantage is that not all relevant genes are necessarily tested. After filtering our data, many of the genes with known roles in the HPA axis were not included in comparisons or had coverage at only a few CpG sites. Thus we did not directly test for methylation differences for many key genes. It is possible that deeper sequencing of our libraries with more lanes or fewer samples per lane would have improved our ability to detect functional differences. Studying DNA methylation in non-model systems is a rapidly developing field and many recent papers outline the pros and cons of various approaches [@sepers2019; @laine2022; @beck2022]. One particularly promising approach that may strike a balance between a focus on candidate genes and the ability to detect genome wide associations is to combine RRBS with probes that enrich sequences at a potentially large number of target genes [target-enriched enzymatic methyl sequencing, @rubenstein2023].
+
+Regardless of the functional consequences of the changes we detected, the fact that brief increases in corticosterone have causal effects on the regulation of methylation even during adulthood is one step in determining whether methylation plays a role in flexible adjustment of the stress response system. Understanding the mechanism(s) that integrate experience with future stress responsiveness has important consequences for predicting how and when individuals can cope with repeated exposure to challenges. Conceptual models of the stress response suggest that while repeated challenges can sometimes generate long term costs [e.g., @romero2009; @mcewen2003], activation of the stress response at other times may prime more effective responses to future challenges [e.g., @del2011; @hilker2016]. Understanding the mechanism by which stress exposure is encoded biologically will help to differentiate these possibilities and shed light on when and how individuals succeed or fail through flexible regulation of the physiological response to challenges.
 
 ## ACKNOWLEDGMENTS
 
-We would like to thank the members of the tree swallow research team for assistance with fieldwork. Bronwyn Butcher and the Lovette Lab provided input on lab methods and members of the Vitousek Lab provided feedback on earlier versions of the manuscript. **MAREN: I've been lately trying to list all names of field assistants who helped, but I'm not sure about names of the 2015 field crew.** 2016 Ithaca crew: Lyra Liu, Garret Levesque, Avram Pinals, Joe Colcombe, Vanesa Rodriguez-Arcilla, David Scheck, Cedric Zimmer, Tom Ryan
+We would like to thank the members of the tree swallow research team for assistance with fieldwork. Bronwyn Butcher and the Lovette Lab provided input on lab methods and members of the Vitousek Lab provided feedback on earlier versions of the manuscript. Charlotte Holden produced the tree swallow illustrations. **MAREN: I've been lately trying to list all names of field assistants who helped, but I'm not sure about names of the 2015 field crew.** 2016 Ithaca crew: Lyra Liu, Garret Levesque, Avram Pinals, Joe Colcombe, Vanesa Rodriguez-Arcilla, David Scheck, Cedric Zimmer, Tom Ryan
 
 ## AUTHOR CONTRIBUTIONS
 
@@ -162,7 +212,7 @@ All methods were approved by Cornell IACUC and sampling was conducted with appro
 
 ## FUNDING
 
-CCT and MNV were supported by NSF-IOS 1457251 and 2128337 and by DARPA D17AP00033. The views, opinions and/or findings expressed are those of the authors and should not be interpreted as representing the official views or policies of the Department of Defense or the U.S. Government. CCT and SMM were supported by the Rose Postdoctoral program at the Cornell Lab of Ornithology. **MAREN: can you check funding do we want to list all these grants? Sort of a weird project since samples go back to 2014 so not sure what is best to list.**
+Research was supported by NSF-IOS grants 1457251 and 2128337 and by DARPA D17AP00033. The views, opinions and/or findings expressed are those of the authors and should not be interpreted as representing the official views or policies of the Department of Defense or the U.S. Government. CCT and SMM were supported by the Rose Postdoctoral program at the Cornell Lab of Ornithology. **MAREN: can you check funding do we want to list all these grants? Sort of a weird project since samples go back to 2015 but effort extends over various years/funding so not sure what grants we want to list.**
 
 ## REFERENCES
 
@@ -194,6 +244,47 @@ sum_plot
 
 rpt_sam <- readRDS(here::here("5_temporary_files/consistent_meth.rds"))
 rpt_sam
+
+```
+
+\newpage
+
+```{r gene-table, echo = FALSE, message = FALSE, warning = FALSE}
+gene_table <- data.frame(
+  Comparison = c("Baseline corticosterone", "Stress-induced corticosterone", "Treatment within year", "Treatment between years"),
+  Genes = c(
+    
+    "ABHD8; CBX2; CCDC15; CLP1; HELZ; HMGA1; LIG3; LOC100220428; LOC100221958; LOC100223410; LOC100228079; LOC751972; LWS; MAST3; NFASC; NRCAM; OPN1SW; PCBP2; PCBP3; PCBP4; PCMT1; PUS3; RHO; SESN1; SESN3; STAMBPL1; STMN1; STMN2; STMN3; TAF6L; TMIE; ZFYVE19",
+            
+            "ACVR1; ACVR1B; ACVRL1; ADGRB1; ADGRB2; ADGRB3; AKT1; AKT3; ALPK1; ALX1; ARHGEF11; ARID3A; ARID3B; ARID3C; ASB3; AXIN1; AXIN2; BMPR1A; BMPR1B; CLDN1; CLDN14; CLDN5; COPA; DCLK1; DCX; ESRRG; FOSL2; FOXJ1; GALM; GATA4; GATA5; GATA6; GPR171; HID1; HNF4A; HNF4G; HOXA3; HOXB3; HSPA13; HSPA14; HSPA2; HSPA5; HSPA8; HSPA9; IER5L; IGHMBP2; IGSF9B; IKZF1; IKZF2; IKZF3; ITGA11; KIF1A; KIF1B; KLHL12; KLHL17; KLHL18; KLHL2; KLHL20; KLHL5; LAMB1; LAMB2; LAMB3; LDLRAP1; LECT2; LOC100217876; LOC100219031; LOC100220115; LOC100221543; LOC100222291; LOC100222941; LOC100223643; LOC100224585; LOC100224644; LOC100224843; LOC100225871; LOC100226582; LOC100226815; LOC100227201; LOC100227468; LOC100227703; LOC100229020; LOC100229354; LOC100229528; LOC100229609; LOC100229630; LOC100230278; LOC100230328; LOC100230362; LOC100231693; LOC100231893; LOC100232259; LOC101233849; LOC105758838; LOC105759110; LOC105759301; LOC105759399; LOC105759510; LOC105759937; LOC115491093; LOC115491353; LOC115491354; LOC115491358; LOC115491417; LOC115491512; LOC115494566; LOC115494567; LOC115496063; LOC115496268; LOC115497065; LOC115497066; LOC115497067; LOC115497068; LOC115497095; LOC115497281; LOC115498367; LOC116807418; LOC116807419; LOC121468018; MAPK1IP1L; MC1R; MC2R; MC3R; MC4R; MC5R; MEX3A; MEX3B; MEX3D; MITF; MNX1; MOB1B; MOB3C; MYO1D; NCOA5; NCOR2; NKX3-2; NR2E1; NR2E3; NR2F1; NR2F2; NR2F6; NR5A2; P2RY12; P2RY13; P2RY14; PCDH10; PCDH12; PCDH8; PIM1; PIM3; PKNOX1; PKNOX2; PLEKHA6; PLEKHO1; PTCH1; PTK7; RAX; RAX2; RXRA; SGK1; SGK2; SIX6; SLC25A10; SLC66A1; SRSF3; SYNPO; TFEB; TFEC; TGFBR1; TIMM8A; TNRC18; UBALD1; UBALD2; UBXN7; WDR7; ZCCHC14; ZDHHC23",
+            
+    "ACTA1; ACTA2; ACTB; ACTC1; ACTG1; ACTG2; ACTR1A; ASS1; ESPN; GALNT3; GALNT6; GMPS; GPR27; GPR85; INHBB; IRF7; ITGA11; KCNG1; KCNG2; KCNG4; LOC100190135; LOC100218246; LOC100218887; LOC100220115; LOC100220137; LOC100227878; LOC105758845; LOC105758846; LOC105758847; LOC105758850; LOC105758859; LOC105760754; LOC115494114; LOC115496608; LOC115497065; LOC115497066; LOC115497067; LOC115497068; LOC115497975; LOC115498396; LOC115498513; LOC115498523; LOC116809297; NTN1; NTN3; NUAK1; NUAK2; PCDH15; RIMS3; TMPRSS6; VDAC1; VDAC2",
+    
+    "ACVR1B; TGFBR1; BMPR1A; BMPR1B; ACVR1; ACVRL1; NETO1; TLL2; TLL1; BMP1; LOC115495659; LOC115495665; LOC115495661; LOC115490544; MMADHC; TBKBP1")
+)
+library(magrittr)
+library(knitr)
+kable(gene_table, booktabs = TRUE, longtable = TRUE, caption = "List of genes with differentially methylated CpGs in exons, introns, or within 2kb upstream of the gene.") %>%
+  kableExtra::kable_styling(full_width = TRUE) %>%
+  kableExtra::column_spec(1, width = "3cm") %>%
+  kableExtra::kable_styling(latex_options = c("repeat_header", "striped"))
+
+#%>%
+ # kableExtra::kable_styling(full_width = TRUE, longtable = TRUE) %>%
+  #kableExtra::column_spec(2, width = "12cm")
+
+```
+
+```{r go-table, echo = FALSE, message = FALSE, warning = FALSE}
+go_table <- readRDS(here::here("4_other_output", "go_table.rds"))
+go_tab2 <- go_table[, c("GO_term", "FDR2", "Function")]
+
+kable(go_tab2, booktabs = TRUE, longtable = TRUE, caption = "GO terms identified using DAVID after correction to a false discovery rate of 0.05 for each comparison set.", col.names = c("GO Term", "FDR", "Function")) %>%
+  kableExtra::kable_styling(latex_options = c("striped", "repeat_header")) %>%
+  kableExtra::pack_rows("Baseline corticosterone", 1, 14) %>%
+  kableExtra::pack_rows("Stress-induced corticosterone", 15, 36) %>%
+  kableExtra::pack_rows("Within-year treatment", 37, 38) %>%
+  kableExtra::pack_rows("Between-year treatment", 39, 65)
 
 ```
 
