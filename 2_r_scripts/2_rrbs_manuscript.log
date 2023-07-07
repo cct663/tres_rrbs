@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  16 MAR 2023 15:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  7 JUL 2023 12:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -572,30 +572,26 @@ Package caption Info: hyperref package is loaded.
 Package caption Info: longtable package is loaded.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/caption/ltcaption.sty
 Package: ltcaption 2013/06/09 v1.4-94 longtable captions (AR)
-)) (/usr/local/texlive/2018/texmf-dist/tex/latex/base/flafter.sty
-Package: flafter 2018/01/08 v1.4c Standard LaTeX floats after reference (FMi)
-Applying: [2015/01/01] float order in 2-column on input line 49.
-Already applied: [0000/00/00] float order in 2-column on input line 151.
+)) (/usr/local/texlive/2018/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count130
+\float@exts=\toks26
+\float@box=\box35
+\@float@everytoks=\toks27
+\@floatcapt=\box36
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2016/11/25 v2.2 Span multiple rows of a table
 \multirow@colwidth=\skip60
-\multirow@cntb=\count130
+\multirow@cntb=\count131
 \multirow@dima=\skip61
 \bigstrutjot=\dimen153
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/wrapfig/wrapfig.sty
 \wrapoverhang=\dimen154
 \WF@size=\dimen155
-\c@WF@wrappedlines=\count131
-\WF@box=\box35
-\WF@everypar=\toks26
+\c@WF@wrappedlines=\count132
+\WF@box=\box37
+\WF@everypar=\toks28
 Package: wrapfig 2003/01/31  v 3.6
-) (/usr/local/texlive/2018/texmf-dist/tex/latex/float/float.sty
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count132
-\float@exts=\toks27
-\float@box=\box36
-\@float@everytoks=\toks28
-\@floatcapt=\box37
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/colortbl/colortbl.sty
 Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
 \everycr=\toks29
@@ -671,40 +667,37 @@ Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 
 LaTeX Warning: Label `tab:go-table' multiply defined.
 
-
-LaTeX Warning: Label `tab:go-table' multiply defined.
-
 )
 \openout1 = `2_rrbs_manuscript.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 121.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 121.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 120.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 120.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 121.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 120.
+LaTeX Font Info:    ... okay on input line 120.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 120.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \microtypecontext on input line 121.
+LaTeX Info: Redefining \microtypecontext on input line 120.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
@@ -746,7 +739,7 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 \AtBeginShipoutBox=\box48
-Package hyperref Info: Link coloring OFF on input line 121.
+Package hyperref Info: Link coloring OFF on input line 120.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/local/texlive/2018/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -754,9 +747,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count148
 )
-LaTeX Info: Redefining \ref on input line 121.
-LaTeX Info: Redefining \pageref on input line 121.
-LaTeX Info: Redefining \nameref on input line 121.
+LaTeX Info: Redefining \ref on input line 120.
+LaTeX Info: Redefining \pageref on input line 120.
+LaTeX Info: Redefining \nameref on input line 120.
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -796,175 +789,198 @@ Package caption Info: float package is loaded.
 Package caption Info: threeparttable package is loaded.
 Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 123.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 122.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 123.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 122.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 123
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 122
 .
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 123
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 122
 .
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 123.
+(Font)              <14.4> on input line 122.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 123.
+(Font)              <10> on input line 122.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 123.
-LaTeX Font Info:    Try loading font information for U+msa on input line 123.
+(Font)              <7> on input line 122.
+LaTeX Font Info:    Try loading font information for U+msa on input line 122.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 123.
+LaTeX Font Info:    Try loading font information for U+msb on input line 122.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2018/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 ) [1
 
-{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 149.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 149.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 149.
-[3] [4]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 169.
-
-(/usr/local/texlive/2018/texmf-dist/tex/latex/lm/t1lmtt.fd
-File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [5] [6]
-<experiment_fig.png, id=47, 933.4072pt x 426.2324pt>
+{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+<experiment_fig.png, id=27, 963.2788pt x 541.8644pt>
 File: experiment_fig.png Graphic file (type png)
 <use experiment_fig.png>
-Package pdftex.def Info: experiment_fig.png  used on input line 197.
-(pdftex.def)             Requested size: 469.76462pt x 214.51399pt.
+Package pdftex.def Info: experiment_fig.png  used on input line 154.
+(pdftex.def)             Requested size: 469.76189pt x 264.25084pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 197--198
+Underfull \hbox (badness 10000) in paragraph at lines 154--155
 
  []
 
-[7 <./experiment_fig.png>]
-<2_rrbs_manuscript_files/figure-latex/volc-plot-1.pdf, id=74, 554.07pt x 468.75
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 164.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 164.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 164.
+<2_rrbs_manuscript_files/figure-latex/carry-fig-1.pdf, id=35, 521.95pt x 243.91
 125pt>
+File: 2_rrbs_manuscript_files/figure-latex/carry-fig-1.pdf Graphic file (type p
+df)
+<use 2_rrbs_manuscript_files/figure-latex/carry-fig-1.pdf>
+Package pdftex.def Info: 2_rrbs_manuscript_files/figure-latex/carry-fig-1.pdf  
+used on input line 168.
+(pdftex.def)             Requested size: 469.75862pt x 219.5218pt.
+[4 <./experiment_fig.png>] [5 <./2_rrbs_manuscript_files/figure-latex/carry-fig
+-1.pdf>]
+<2_rrbs_manuscript_files/figure-latex/volc-plot-1.pdf, id=84, 580.1675pt x 434.
+62375pt>
 File: 2_rrbs_manuscript_files/figure-latex/volc-plot-1.pdf Graphic file (type p
 df)
 <use 2_rrbs_manuscript_files/figure-latex/volc-plot-1.pdf>
 Package pdftex.def Info: 2_rrbs_manuscript_files/figure-latex/volc-plot-1.pdf  
-used on input line 219.
-(pdftex.def)             Requested size: 469.75275pt x 397.41762pt.
-<2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf, id=78, 345.29pt x 279.042
-5pt>
-File: 2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf Graphic file (type pd
-f)
-<use 2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf>
-Package pdftex.def Info: 2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf  u
-sed on input line 250.
-(pdftex.def)             Requested size: 345.2944pt x 279.04607pt.
-[8] [9 <./2_rrbs_manuscript_files/figure-latex/volc-plot-1.pdf>] [10 <./2_rrbs_
-manuscript_files/figure-latex/acth-fig-1.pdf>] [11] [12] [13] [14] [15] [16]
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 443.
+used on input line 186.
+(pdftex.def)             Requested size: 469.75603pt x 351.91066pt.
+<genes.png, id=88, 686.4044pt x 497.2176pt>
+File: genes.png Graphic file (type png)
+<use genes.png>
+Package pdftex.def Info: genes.png  used on input line 196.
+(pdftex.def)             Requested size: 446.28326pt x 323.27866pt.
+[6] [7 <./2_rrbs_manuscript_files/figure-latex/volc-plot-1.pdf>] [8 <./genes.pn
+g>] [9] [10] [11] [12] [13]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 259.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
+) [14] [15] [16] [17] [18] [19] [20]
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 514.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [17]
-<read_summary.png, id=221, 2710.125pt x 1355.0625pt>
+) [21] [22]
+<read_summary.png, id=269, 2710.125pt x 1355.0625pt>
 File: read_summary.png Graphic file (type png)
 <use read_summary.png>
-Package pdftex.def Info: read_summary.png  used on input line 476.
+Package pdftex.def Info: read_summary.png  used on input line 578.
 (pdftex.def)             Requested size: 446.24156pt x 223.12077pt.
-<2_rrbs_manuscript_files/figure-latex/sum-plot-1.pdf, id=222, 539.01375pt x 315
+<2_rrbs_manuscript_files/figure-latex/sum-plot-1.pdf, id=270, 539.01375pt x 315
 .1775pt>
 File: 2_rrbs_manuscript_files/figure-latex/sum-plot-1.pdf Graphic file (type pd
 f)
 <use 2_rrbs_manuscript_files/figure-latex/sum-plot-1.pdf>
 Package pdftex.def Info: 2_rrbs_manuscript_files/figure-latex/sum-plot-1.pdf  u
-sed on input line 483.
+sed on input line 585.
 (pdftex.def)             Requested size: 469.76064pt x 274.68312pt.
-[18 <./read_summary.png>] [19 <./2_rrbs_manuscript_files/figure-latex/sum-plot-
+[23 <./read_summary.png>] [24 <./2_rrbs_manuscript_files/figure-latex/sum-plot-
 1.pdf>]
-<2_rrbs_manuscript_files/figure-latex/rpt-sample-1.pdf, id=242, 526.96875pt x 2
+<2_rrbs_manuscript_files/figure-latex/rpt-sample-1.pdf, id=289, 526.96875pt x 2
 65.99374pt>
 File: 2_rrbs_manuscript_files/figure-latex/rpt-sample-1.pdf Graphic file (type 
 pdf)
 <use 2_rrbs_manuscript_files/figure-latex/rpt-sample-1.pdf>
 Package pdftex.def Info: 2_rrbs_manuscript_files/figure-latex/rpt-sample-1.pdf 
- used on input line 491.
+ used on input line 593.
 (pdftex.def)             Requested size: 469.78067pt x 237.12738pt.
-[20 <./2_rrbs_manuscript_files/figure-latex/rpt-sample-1.pdf>] [21]
-Overfull \hbox (13.99893pt too wide) in alignment at lines 509--514
+[25 <./2_rrbs_manuscript_files/figure-latex/rpt-sample-1.pdf>]
+<2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf, id=306, 345.29pt x 279.04
+25pt>
+File: 2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf Graphic file (type pd
+f)
+<use 2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf>
+Package pdftex.def Info: 2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf  u
+sed on input line 601.
+(pdftex.def)             Requested size: 345.2944pt x 279.04607pt.
+[26 <./2_rrbs_manuscript_files/figure-latex/acth-fig-1.pdf>]
+Overfull \hbox (10.21844pt too wide) in paragraph at lines 626--626
+\T1/lmr/m/n/12 (-20) dexamethasone 
+ []
+
+[27] [28] [29] [30] [31]
+Overfull \hbox (13.99893pt too wide) in alignment at lines 689--694
  [] [] [] 
  []
 
 
-Overfull \hbox (13.99893pt too wide) in alignment at lines 514--519
+Overfull \hbox (13.99893pt too wide) in alignment at lines 694--699
  [] [] [] 
  []
 
 
-Overfull \hbox (13.99893pt too wide) in alignment at lines 519--521
+Overfull \hbox (13.99893pt too wide) in alignment at lines 699--701
  [] [] [] 
  []
 
 
-Overfull \hbox (13.99893pt too wide) in alignment at lines 521--523
+Overfull \hbox (13.99893pt too wide) in alignment at lines 701--703
  [] [] [] 
  []
 
 
-Overfull \hbox (13.99893pt too wide) in alignment at lines 523--546
+Overfull \hbox (13.99893pt too wide) in alignment at lines 703--726
  [] [] [] 
  []
 
 
-Overfull \hbox (13.99893pt too wide) in alignment at lines 546--567
+Overfull \hbox (13.99893pt too wide) in alignment at lines 726--747
  [] [] [] 
  []
 
 
-Overfull \hbox (13.99893pt too wide) in alignment at lines 567--588
+Overfull \hbox (13.99893pt too wide) in alignment at lines 747--769
  [] [] [] 
  []
 
-[22]
-Overfull \hbox (13.99893pt too wide) in alignment at lines 588--597
+
+Overfull \hbox (13.99893pt too wide) in alignment at lines 769--789
  [] [] [] 
  []
 
-[23]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 599.
-[24]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 599.
+[32]
+Overfull \hbox (13.99893pt too wide) in alignment at lines 789--789
+ [] [] [] 
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 791.
+[33]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 791.
 (./2_rrbs_manuscript.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 599.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 599.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 791.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 791.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 599.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 791.
  ) 
 Here is how much of TeX's memory you used:
- 15874 strings out of 492649
- 234760 string characters out of 6129622
- 368280 words of memory out of 5000000
- 19263 multiletter control sequences out of 15000+600000
- 67539 words of font info for 116 fonts, out of 8000000 for 9000
+ 15956 strings out of 492649
+ 235852 string characters out of 6129622
+ 371685 words of memory out of 5000000
+ 19272 multiletter control sequences out of 15000+600000
+ 70354 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,16n,53p,1878b,639s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,16n,53p,2380b,639s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/local/texlive/2018/
 texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2018/texmf-dist
@@ -979,10 +995,10 @@ f-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2018/texmf-dist/fonts
 lic/lm/lmri12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lms
 y10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></u
 sr/local/texlive/2018/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
-Output written on 2_rrbs_manuscript.pdf (24 pages, 16871532 bytes).
+Output written on 2_rrbs_manuscript.pdf (33 pages, 21135369 bytes).
 PDF statistics:
- 380 PDF objects out of 1000 (max. 8388607)
- 322 compressed objects within 4 object streams
- 111 named destinations out of 1000 (max. 500000)
- 16503 words of extra memory for PDF output out of 17280 (max. 10000000)
+ 462 PDF objects out of 1000 (max. 8388607)
+ 391 compressed objects within 4 object streams
+ 135 named destinations out of 1000 (max. 500000)
+ 16521 words of extra memory for PDF output out of 17280 (max. 10000000)
 

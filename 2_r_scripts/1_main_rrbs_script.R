@@ -12,7 +12,9 @@
     cov_list <- list.files(here("0_processed_data/bismark_cov_output"))
     d_bis <- read.delim(here("0_processed_data/bismark_sample_summary.txt"))
     d_sample <- read.delim(here("1_raw_data/rrbs_sample_metadata.txt"))
-    
+
+
+        
 # Set colors ----
     cort_col <- "#56B4E9"
     cont_col <- "#E69F00"
@@ -28,6 +30,85 @@
           axis.title = element_text(size = 16)
         ) 
     }
+
+# Cross-year cort analysis ----
+    # Simple analysis of one year effects of dosing on cort and breeding timing
+    dx <- read.delim(here::here("1_raw_data", "cross_year_cort.txt"))
+    
+  # models
+    
+    m1 <- lm(base2 ~ treatcat_y1 + as.factor(year), data = dx)
+    m2 <- lm(stress2 ~ treatcat_y1 + base2 + as.factor(year), data = dx)
+    m3 <- lm(dex2 ~ treatcat_y1 + stress2 + as.factor(year), data = dx)
+    m4 <- lm(ci2_doy ~ treatcat_y1 + as.factor(year), data = dx[dx$ci2_doy < 145, ])
+    
+    tab_model(m1, m2, m3, m4)
+    
+  # make year standardized columns
+    dx$base2_yr <- transform(dx, y_base2 = ave(base2, year, FUN = scale))$y_base2 + mean(na.omit(dx$base2))
+    dx$stress2_yr <- transform(dx, y_stress2 = ave(stress2, year, FUN = scale))$y_stress2 + mean(na.omit(dx$stress2))
+    dx$dex2_yr <- transform(dx, y_dex2 = ave(dex2, year, FUN = scale))$y_dex2 + mean(na.omit(dx$dex2))
+    dx$cidoy2_yr <- transform(dx, y_cidoy2 = ave(ci2_doy, year, FUN = scale))$y_cidoy2 + mean(na.omit(dx$ci2_doy))
+    
+    dx2 <- subset(dx, dx$ci2_doy < 145)
+    
+  # plots  
+    pa <- ggplot(dx, mapping = aes(x = treatcat_y1, y = base2_yr, fill = treatcat_y1)) +
+      theme_rrbs() +
+      theme(axis.title = element_text(size = 12)) +
+      theme(axis.text = element_text(size = 10)) +
+      geom_boxplot(outlier.shape = NA, alpha = 0.8) +
+      geom_jitter(width = 0.1, alpha = 0.7) +
+      scale_fill_manual(values = c("#66BBBB", "#DD4444")) +
+      guides(fill = "none") +
+      ylab("Phenotype Year 2 \n Baseline corticosterone \n (ng/ml, year corrected)") +
+      xlab("Treatment Year 1") +
+      scale_x_discrete(labels = c("Control", "Cort")) +
+      annotate("text", x = -Inf, y = Inf, label = "A", hjust = -0.5, vjust = 1.5, size = 6)
+    
+    pb <- ggplot(dx, mapping = aes(x = treatcat_y1, y = stress2_yr, fill = treatcat_y1)) +
+      theme_rrbs() +
+      theme(axis.title = element_text(size = 12)) +
+      theme(axis.text = element_text(size = 10)) +
+      geom_boxplot(outlier.shape = NA, alpha = 0.8) +
+      geom_jitter(width = 0.1, alpha = 0.7) +
+      scale_fill_manual(values = c("#66BBBB", "#DD4444")) +
+      guides(fill = "none") +
+      ylab("Induced corticosterone \n (ng/ml, year corrected)") +
+      xlab("Treatment Year 1") +
+      scale_x_discrete(labels = c("Control", "Cort")) +
+      annotate("text", x = -Inf, y = Inf, label = "B", hjust = -0.5, vjust = 1.5, size = 6)
+    
+    pc <- ggplot(dx, mapping = aes(x = treatcat_y1, y = dex2_yr, fill = treatcat_y1)) +
+      theme_rrbs() +
+      theme(axis.title = element_text(size = 12)) +
+      theme(axis.text = element_text(size = 10)) +
+      geom_boxplot(outlier.shape = NA, alpha = 0.8) +
+      geom_jitter(width = 0.1, alpha = 0.7) +
+      scale_fill_manual(values = c("#66BBBB", "#DD4444")) +
+      guides(fill = "none") +
+      ylab("Post-dexamethasone corticosterone \n (ng/ml, year corrected)") +
+      xlab("Treatment Year 1") +
+      scale_x_discrete(labels = c("Control", "Cort")) +
+      annotate("text", x = -Inf, y = Inf, label = "B", hjust = -0.5, vjust = 1.5, size = 6)
+    
+    pd <- ggplot(dx2, mapping = aes(x = treatcat_y1, y = cidoy2_yr, fill = treatcat_y1)) +
+      theme_rrbs() +
+      theme(axis.title = element_text(size = 12)) +
+      theme(axis.text = element_text(size = 10)) +
+      geom_boxplot(outlier.shape = NA, alpha = 0.8) +
+      geom_jitter(width = 0.1, alpha = 0.7) +
+      scale_fill_manual(values = c("#66BBBB", "#DD4444")) +
+      guides(fill = "none") +
+      ylab("Clutch initiation \n (day of year, year corrected)") +
+      xlab("Treatment Year 1") +
+      scale_x_discrete(labels = c("Control", "Cort")) +
+      annotate("text", x = -Inf, y = Inf, label = "C", hjust = -0.5, vjust = 1.5, size = 6)
+    
+    p_acd <- ggarrange(pa, pc, pd, nrow = 1, widths = c(1.12, 1, 1, 1))
+    saveRDS(p_acd, here::here("5_temporary_files", "carry_fig.rds"))
+      
+      
     
 # Simple plots of reads and methylation ----
     # reads and methylation levels
@@ -656,6 +737,9 @@
           filt_DA$location <- paste(filt_DA$chr, filt_DA$start, filt_DA$end, sep = "_")
           filt_BE$location <- paste(filt_BE$chr, filt_BE$start, filt_BE$end, sep = "_")
           filt_CF$location <- paste(filt_CF$chr, filt_CF$start, filt_CF$end, sep = "_")
+          
+          # adding in dex cort for the within year analysis
+            filt_DA2 <- plyr::join(filt_DA, d_sample[, c("sample_id", "d_cort")], "sample_id")
       
       # filter to locations in both datasets for pre-post within year
         # this is just figuring out which CpGs actually have data for both pre and post
@@ -699,10 +783,11 @@
         
       # filter for the correlation with natural cort models
           # in this case don't need the same joining as done above
-            nat_cort <- filt_DA[, c("joiner", "chr", "start", "end", "sample", "coverage", 
+            nat_cort <- filt_DA2[, c("joiner", "chr", "start", "end", "sample", "coverage", 
                                     "sample2", "num_cs", "sample_id", "location",
                                     "band", "year", "min_age", "age_group", "treatment", 
-                                    "group", "comp_grp", "trt_label", "mass", "bhead", "fwing", "s_cort", "b_cort")]
+                                    "group", "comp_grp", "trt_label", "mass", "bhead", "fwing", 
+                                    "s_cort", "b_cort", "d_cort")]
             
             
           # Add column for percent methylation  
@@ -763,7 +848,9 @@
                                      base_n = NA, base_int = NA, base_eff = NA, base_p = NA,
                                      base_singular = NA, base_r2c = NA, base_r2m = NA, base_message = NA,
                                      si_n = NA, si_int = NA, si_eff = NA, si_p = NA,
-                                     si_singular = NA, si_r2c = NA, si_r2m = NA, si_message = NA)  
+                                     si_singular = NA, si_r2c = NA, si_r2m = NA, si_message = NA,
+                                     dex_n = NA, dex_int = NA, dex_eff = NA, dex_p = NA,
+                                     dex_singular = NA, dex_r2c = NA, dex_r2m = NA, dex_message = NA)  
               
       # fit models for each cpg
             # first for within year comparison  
@@ -884,41 +971,60 @@
                       subc <- subset(nat_cort, nat_cort$location == output_cor$location[i])
                       output_cor$base_n[i] <- nrow(subset(subc, is.na(subc$b_cort) == FALSE))
                       output_cor$si_n[i] <- nrow(subset(subc, is.na(subc$s_cort) == FALSE))
+                      output_cor$dex_n[i] <- nrow(subset(subc, is.na(subc$d_cort) == FALSE))
                       
-                      if(output_cor$base_n[i] > 9){
-                        mc <- glmer(cbind(num_cs, coverage - num_cs) ~ scale(b_cort) + (1|band),
-                                  family = "binomial", data = subc)
-                        
-                        if(length(mc@optinfo$conv$lme4$messages) > 0){
-                          output_cor$base_message[i] <- mc@optinfo$conv$lme4$messages
-                        } 
-
-                        sc <- summary(mc)$coefficients
-                        rc <- suppressWarnings(r.squaredGLMM(mc))
-                        output_cor$base_r2c[i] <- rc[1, 2]
-                        output_cor$base_r2m[i] <- rc[1, 1]
-                        output_cor$base_int[i] <- sc[1, 1]
-                        output_cor$base_eff[i] <- sc[2, 1]
-                        output_cor$base_p[i] <- sc[2, 4]
-                        output_cor$base_singular[i] <- isSingular(mc)
-                      }
+                      # if(output_cor$base_n[i] > 9){
+                      #   mc <- glmer(cbind(num_cs, coverage - num_cs) ~ scale(b_cort) + (1|band),
+                      #             family = "binomial", data = subc)
+                      #   
+                      #   if(length(mc@optinfo$conv$lme4$messages) > 0){
+                      #     output_cor$base_message[i] <- mc@optinfo$conv$lme4$messages
+                      #   } 
+                      # 
+                      #   sc <- summary(mc)$coefficients
+                      #   rc <- suppressWarnings(r.squaredGLMM(mc))
+                      #   output_cor$base_r2c[i] <- rc[1, 2]
+                      #   output_cor$base_r2m[i] <- rc[1, 1]
+                      #   output_cor$base_int[i] <- sc[1, 1]
+                      #   output_cor$base_eff[i] <- sc[2, 1]
+                      #   output_cor$base_p[i] <- sc[2, 4]
+                      #   output_cor$base_singular[i] <- isSingular(mc)
+                      # }
+                      # 
+                      # if(output_cor$si_n[i] > 9){
+                      #   ms <- glmer(cbind(num_cs, coverage - num_cs) ~ scale(s_cort) + (1|band),
+                      #               family = "binomial", data = subc)
+                      #   
+                      #   if(length(ms@optinfo$conv$lme4$messages) > 0){
+                      #     output_cor$si_message[i] <- ms@optinfo$conv$lme4$messages
+                      #   } 
+                      #   
+                      #   ss <- summary(ms)$coefficients
+                      #   rs <- suppressWarnings(r.squaredGLMM(ms))
+                      #   output_cor$si_r2c[i] <- rs[1, 2]
+                      #   output_cor$si_r2m[i] <- rs[1, 1]
+                      #   output_cor$si_int[i] <- ss[1, 1]
+                      #   output_cor$si_eff[i] <- ss[2, 1]
+                      #   output_cor$si_p[i] <- ss[2, 4]
+                      #   output_cor$si_singular[i] <- isSingular(ms)
+                      # }
                       
-                      if(output_cor$si_n[i] > 9){
-                        ms <- glmer(cbind(num_cs, coverage - num_cs) ~ scale(s_cort) + (1|band),
+                      if(output_cor$dex_n[i] > 9){
+                        md <- glmer(cbind(num_cs, coverage - num_cs) ~ scale(d_cort) + (1|band),
                                     family = "binomial", data = subc)
                         
-                        if(length(ms@optinfo$conv$lme4$messages) > 0){
-                          output_cor$si_message[i] <- ms@optinfo$conv$lme4$messages
+                        if(length(md@optinfo$conv$lme4$messages) > 0){
+                          output_cor$dex_message[i] <- md@optinfo$conv$lme4$messages
                         } 
                         
-                        ss <- summary(ms)$coefficients
-                        rs <- suppressWarnings(r.squaredGLMM(ms))
-                        output_cor$si_r2c[i] <- rs[1, 2]
-                        output_cor$si_r2m[i] <- rs[1, 1]
-                        output_cor$si_int[i] <- ss[1, 1]
-                        output_cor$si_eff[i] <- ss[2, 1]
-                        output_cor$si_p[i] <- ss[2, 4]
-                        output_cor$si_singular[i] <- isSingular(ms)
+                        sd <- summary(md)$coefficients
+                        rd <- suppressWarnings(r.squaredGLMM(md))
+                        output_cor$dex_r2c[i] <- rd[1, 2]
+                        output_cor$dex_r2m[i] <- rd[1, 1]
+                        output_cor$dex_int[i] <- sd[1, 1]
+                        output_cor$dex_eff[i] <- sd[2, 1]
+                        output_cor$dex_p[i] <- sd[2, 4]
+                        output_cor$dex_singular[i] <- isSingular(md)
                       }
                     
                       
@@ -933,21 +1039,29 @@
                     output_cor$base_q <- qqb$qvalues
                     qqs <- qvalue(output_cor$si_p, fdr.level = 0.05)
                     output_cor$si_q <- qqs$qvalues
+                    qqd <- qvalue(output_cor$dex_p, fdr.level = 0.05)
+                    output_cor$dex_q <- qqd$qvalues
                     
                     output_cor$base_sig <- "no"
                     output_cor$si_sig <- "no"
+                    output_cor$dex_sig <- "no"
                     
                     for(i in 1:nrow(output_cor)){
-                      if(output_cor$base_q[i] < 0.05){output_cor$base_sig[i] <- "yes"}
-                      if(output_cor$si_q[i] < 0.05){output_cor$si_sig[i] <- "yes"}
+                      #if(output_cor$base_q[i] < 0.05){output_cor$base_sig[i] <- "yes"}
+                      #if(output_cor$si_q[i] < 0.05){output_cor$si_sig[i] <- "yes"}
+                      if(is.na(output_cor$dex_q[i]) == FALSE){
+                        if(output_cor$dex_q[i] < 0.05){output_cor$dex_sig[i] <- "yes"}
+                      }
                     }
                     
                     output_base <- subset(output_cor, output_cor$base_singular == FALSE & is.na(output_cor$base_message) == TRUE)
                     output_si <- subset(output_cor, output_cor$si_singular == FALSE & is.na(output_cor$si_message) == TRUE)
+                    output_dex <- subset(output_cor, output_cor$dex_singular == FALSE & is.na(output_cor$dex_message) == TRUE)
                     
                     
                     sig_list_base <- subset(output_base, output_base$base_q < 0.05)
                     sig_list_si <- subset(output_si, output_si$si_q < 0.05)
+                    sig_list_dex <- subset(output_dex, output_dex$dex_q < 0.05)
                     
           # collecting the output of all of these loops into one object to save
               # so that it can be loaded without running again
@@ -956,9 +1070,12 @@
                                             outputx, output2x, sig_listx,  # between year
                                             output_cor,                    # correlation with cort
                                             output_base, sig_list_base,    # base cort only
-                                            output_si, sig_list_si)       # induced cort only
+                                            output_si, sig_list_si,        # induced cort only
+                                            output_dex, sig_list_dex)      # dex cort only
+                
                 #saveRDS(model_loop_output, here::here("4_other_output/model_loop_output.rds"))
                 model_loop_output <- readRDS(here::here("4_other_output/model_loop_output.rds"))
+                
           
           # make a volcano plot for the four comparisons
               output_base <- model_loop_output[[8]]
@@ -972,7 +1089,7 @@
                 scale_color_manual(values = c("gray20", "red")) +
                 guides(color = "none") +
                 coord_cartesian(xlim = c(-3, 3), ylim = c(0, 6.5)) +
-                ggtitle("Baseline corticosterone") +
+                ggtitle("Baseline") +
                 #ggtitle("116 of 78,143 CpGs") + # associated with baseline corticosterone (78,143)") +
                 annotate(geom = "text", label = "A", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
                 theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
@@ -988,9 +1105,24 @@
                 scale_color_manual(values = c("gray20", "red")) +
                 guides(color = "none") +
                 coord_cartesian(xlim = c(-3, 3), ylim = c(0, 6.5)) +
-                ggtitle("Stress-induced corticosterone") +
+                ggtitle("Stress-induced") +
                 #ggtitle("356 of 78,027 CpGs") + # associated with stress-induced corticosterone (78,027)") +
                 annotate(geom = "text", label = "B", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+                theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
+              
+              output_dex <- model_loop_output[[12]]
+              pvdex <- ggplot(data = output_dex, 
+                            mapping = aes(x = dex_eff, y = -log(as.numeric(dex_p), 10), color = dex_sig)) +
+                geom_hline(yintercept = -log(c(0.05, 0.01, 0.001, 0.0001), 10), linetype = "dashed", color = "gray70") +
+                theme_rrbs() +
+                geom_point(alpha = 0.7, size = 0.8) +
+                xlab("Regression coefficient of \n post-dex corticosterone") +
+                ylab("-log10(p-value)") +
+                scale_color_manual(values = c("gray20", "red")) +
+                guides(color = "none") +
+                coord_cartesian(xlim = c(-3, 3), ylim = c(0, 6.5)) +
+                ggtitle("Post-dexamethasone") +
+                annotate(geom = "text", label = "C", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
                 theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
               
               within_output <- model_loop_output[[2]]
@@ -1006,7 +1138,7 @@
                 guides(color = "none") +
                 ggtitle("Within year treatment") +
                 #ggtitle("111 of 48,070 CpGs") + # associated with treatment (48,070)") +
-                annotate(geom = "text", label = "C", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+                annotate(geom = "text", label = "D", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
                 theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
               
               across_output <- model_loop_output[[5]]
@@ -1022,11 +1154,15 @@
                 guides(color = "none") +
                 ggtitle("Between year treatment") +
                 #ggtitle("49 of 6,787 CpGs") + # associated with treatment (6,787)") +
-                annotate(geom = "text", label = "D", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
+                annotate(geom = "text", label = "E", x = -Inf, y = Inf, vjust = 1.5, hjust = -0.5, size = 7) +
                 theme(axis.title = element_text(size = 11), axis.text = element_text(size = 10))
               
+              blank_plot <- ggplot() + theme(panel.background = element_blank())
               
-              pviol <- ggpubr::ggarrange(pv1, pv2, pv3, pv4, ncol = 2, nrow = 2)
+              #pviol <- ggpubr::ggarrange(pv1, pv2, pvdex, pv3, pv4, ncol = 3, nrow = 2)
+              lay <- rbind(c(1, 1, 2, 2, 3, 3),
+                           c(6, 4, 4, 5, 5, 7))
+              pviol <- grid.arrange(grobs = list(pv1, pv2, pvdex, pv3, pv4, blank_plot, blank_plot), layout_matrix = lay)
               #saveRDS(pviol, file = here::here("5_temporary_files/pviol.rds"))
               pviol <- readRDS(here::here("5_temporary_files/pviol.rds"))
               
@@ -1089,12 +1225,18 @@
                   methx2d <- data.frame(location = methx$location, rownum = seq(1, nrow(methx), 1))
                   sl_si <- plyr::join(sl_si, methx2d, "location")
                   si_sig <- meth2[sl_si$rownum, ]
+                  
+                # this one is for post-dex cort
+                  sl_dex <- sig_list_dex[, c("location", "dex_sig")]
+                  methx2d <- data.frame(location = methx$location, rownum = seq(1, nrow(methx), 1))
+                  sl_dex <- plyr::join(sl_dex, methx2d, "location")
+                  dex_sig <- meth2[sl_dex$rownum, ]
                 
                   
                              
           
           
-### BELIEVE THIS IS ALL OLD BELOW HERE IN THIS SECTION      ----
+### BELIEVE THIS SECTION IS ALL OLD IGNORE      ----
                   
       # for cort
       #       output_c <- data.frame(location = unique(input$location),
@@ -1546,7 +1688,7 @@
       plotTargetAnnotation(gene_an, precedence = TRUE, main = "differential")
       getFeatsWithTargetsStats(gene_an, percentage = TRUE)
       
-## testing removing based on similarity in repeat samples DELETE BELOW HERE?? ----
+## THIS SECTION CAN BE DELETED?? ----
     
       #taking from line 303 output
       
@@ -1667,6 +1809,9 @@
         sig_stress <- model_loop_output[[11]]
         null_stress <- model_loop_output[[10]]
         
+        sig_dex <- model_loop_output[[13]]
+        null_dex <- model_loop_output[[12]]
+        
       ## Write a function to extract gene list
         gene_matcher <- function(label = tres_genes2, gkey = gene_key, input = NA){
           # wrangle the list of CpGs
@@ -1696,6 +1841,8 @@
         null_base_genes <- gene_matcher(input = null_base)
         sig_str_genes <- gene_matcher(input = sig_stress)
         null_str_genes <- gene_matcher(input = null_stress)
+        sig_dex_genes <- gene_matcher(input = sig_dex)
+        null_dex_genes <- gene_matcher(input = null_dex)
         
         
       ## find coverage in genes
@@ -1736,26 +1883,31 @@
         str_go_terms <- read.delim(here::here("8_output_for_DAVID", "stress_go_terms.txt"), sep = "\t")
         win_go_terms <- read.delim(here::here("8_output_for_DAVID", "win_go_terms.txt"), sep = "\t")
         bw_go_terms <- read.delim(here::here("8_output_for_DAVID", "bw_go_terms.txt"), sep = "\t")
+        dex_go_terms <- read.delim(here::here("8_output_for_DAVID", "dex_go_terms.txt"), sep = "\t")
 
         base_go_terms$term2 <- substr(base_go_terms$Term, 1, 10)
         str_go_terms$term2 <- substr(str_go_terms$Term, 1, 10)
         win_go_terms$term2 <- substr(win_go_terms$Term, 1, 10)
         bw_go_terms$term2 <- substr(bw_go_terms$Term, 1, 10)
+        dex_go_terms$term2 <- substr(dex_go_terms$Term, 1, 10)
         
         base_go_terms$dbase <- substr(base_go_terms$Category, 1, 9)
         str_go_terms$dbase <- substr(str_go_terms$Category, 1, 9)
         win_go_terms$dbase <- substr(win_go_terms$Category, 1, 9)
         bw_go_terms$dbase <- substr(bw_go_terms$Category, 1, 9)
+        dex_go_terms$dbase <- substr(dex_go_terms$Category, 1, 9)
         
         base_go_terms$db_go <- paste(base_go_terms$dbase, base_go_terms$term2, sep = "_")
         str_go_terms$db_go <- paste(str_go_terms$dbase, str_go_terms$term2, sep = "_")
         win_go_terms$db_go <- paste(win_go_terms$dbase, win_go_terms$term2, sep = "_")
         bw_go_terms$db_go <- paste(bw_go_terms$dbase, bw_go_terms$term2, sep = "_")
+        dex_go_terms$db_go <- paste(dex_go_terms$dbase, dex_go_terms$term2, sep = "_")
         
         base_go_terms$fxn <- str_split_fixed(base_go_terms$Term, pattern = "~", n = 2)[, 2]
         str_go_terms$fxn <- str_split_fixed(str_go_terms$Term, pattern = "~", n = 2)[, 2]
         win_go_terms$fxn <- str_split_fixed(win_go_terms$Term, pattern = "~", n = 2)[, 2]
         bw_go_terms$fxn <- str_split_fixed(bw_go_terms$Term, pattern = "~", n = 2)[, 2]
+        dex_go_terms$fxn <- str_split_fixed(dex_go_terms$Term, pattern = "~", n = 2)[, 2]
         
         base_go_sig <- subset(base_go_terms, base_go_terms$FDR < 0.05)
         base_go_sig <- subset(base_go_sig, base_go_sig$dbase == "GOTERM_MF" | base_go_sig$dbase == "GOTERM_BP")
@@ -1773,13 +1925,19 @@
         bw_go_sig <- subset(bw_go_sig, bw_go_sig$dbase == "GOTERM_MF" | bw_go_sig$dbase == "GOTERM_BP")
         bw_go_sig <- bw_go_sig[!duplicated(bw_go_sig$db_go), ]
         
+        dex_go_sig <- subset(dex_go_terms, dex_go_terms$FDR < 0.05)
+        dex_go_sig <- subset(dex_go_sig, dex_go_sig$dbase == "GOTERM_MF" | dex_go_sig$dbase == "GOTERM_BP")
+        dex_go_sig <- dex_go_sig[!duplicated(dex_go_sig$db_go), ]
+        
         go_table <- data.frame(comparison = c(rep("base", nrow(base_go_sig)),
                                               rep("stress", nrow(str_go_sig)),
+                                              rep("dex", nrow(dex_go_sig)),
                                               rep("within", nrow(win_go_sig)),
-                                              rep("between", nrow(bw_go_sig))),
-                               GO_term = c(base_go_sig$term2, str_go_sig$term2, win_go_sig$term2, bw_go_sig$term2),
-                               FDR = c(base_go_sig$FDR, str_go_sig$FDR, win_go_sig$FDR, bw_go_sig$FDR),
-                               Function = c(base_go_sig$fxn, str_go_sig$fxn, win_go_sig$fxn, bw_go_sig$fxn))
+                                              rep("between", nrow(bw_go_sig))
+                                              ),
+                               GO_term = c(base_go_sig$term2, str_go_sig$term2, dex_go_sig$term2, win_go_sig$term2, bw_go_sig$term2),
+                               FDR = c(base_go_sig$FDR, str_go_sig$FDR, dex_go_sig$FDR, win_go_sig$FDR, bw_go_sig$FDR),
+                               Function = c(base_go_sig$fxn, str_go_sig$fxn, dex_go_sig$fxn, win_go_sig$fxn, bw_go_sig$fxn))
         go_table$FDR2 <- format(go_table$FDR, digits = 3)
         saveRDS(go_table, here::here("4_other_output", "go_table.rds"))
         

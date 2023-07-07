@@ -226,7 +226,6 @@ pa2
             ylim(c(0, 50)) + ggtitle(paste(lt001, "% of CpGs q < 0.0001", sep = " "))#
           pc <- grid.arrange(p1, p2, nrow = 1)
 md <- as.data.frame(getData(myDiff))
-md <- as.data.frame(getData(myDiff))
 md$pct_meth <- pc_cpg#
           p1 <- ggplot(data = md, mapping = aes(x = pc_cpg, y = -log10(qvalue))) + #
             theme_classic() +#

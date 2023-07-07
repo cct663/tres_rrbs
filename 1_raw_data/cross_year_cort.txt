@@ -1,0 +1,46 @@
+Order	Band	Site	Nest	ci_date1	year	treat_y1	treatcat_y1	prebase	prestress	predex	postbase	poststress	postdex	post2base	post2stress	post2dex	failed	fledged	hatched	clutch size	mass 1	mass 2	RETURNED 	Complete nest status	year2	y2clutch	y2treat	y2incaband	y2finalstat	Y2numfled	Y2notes	base2	stress2	dex2	negfeed2	ci_date2	ci2_doy	Notes	year2	brst_bright	Other notes
+3	240150270	CU2	45		2014	control	control	5.90	20.14		2.45	23.25	13.16				No	5	5	6	21	22.5	Y		2015	5	cort	N	Fledged	3		1.312372	54.189785			5/12/15	132		2015		
+101	240150273	CU2	57		2014	low	cort	1.89	27.58		14.44	22.19	38.84				No	3	3	6	21.5	22.1	Y		2015	6	tape	N	Fledged	5		12.46	26.40			5/11/15	131		2015		
+2	240150278	CU2	25		2014	control	control	1.14	7.66	13.70	4.16	12.75	15.89				No	4	4	6	21	20.9	Y		2015	6	control	N	Fledged	5		1.393716	25.209714	35.579803	10.370089	5/13/15	133		2015		
+1	240150287	CU2	9		2014	control	control	3.07	31.77	15.25	2.36	12.22					No	3	3	4	20.5	18.8	Y		2015	5	control	N	Fledged	5		1.80	24.23			5/13/15	133		2015		
+100	240150566	CU2	14		2014	low	cort	2.24	30.37		28.83	6.45					No	4	5	6	20.5	22.8	Y		2015	4	control	N	Died	0	dmso; chicks died	1.55	22.65	13.45	-9.199	5/8/15	128		2015		
+56	240150945	CU2	124		2014	high	cort	7.08		8.56	29.45	143.03	53.56				No	4	6	6	21.5	22	Y		2015											5/11/15	131	CU1; no cort	2017		
+55	240151526	CU2	109		2014	high	cort	3.27	23.31		37.21	114.03	52.54				No	5	6	6	21.75	21.6	Y		2015	6	cort	N	Fledged	5		9.21	6.24	7.34	1.101	5/8/15	128		2015		
+4	240151693	CU2	62		2014	control	control	4.94	22.68								Yes	0	0	5			Y		2015	6	cort	N	Eggs pred	0	eggs pred	1.692401	17.87096	27.497514	9.626554	5/12/15	132		2015		
+54	262125801	CU2	4		2014	high	cort	8.46	28.53	12.80	122.54	63.03	94.23				No	4	4	5	20	17.9	Y		2015	6	cort	N	Fledged	1		1.40	33.17			5/9/15	129		2015		
+63	222154848	CU2	113	5/21/15	2015	High	cort	0.83	20.06	14.69	5.78	28.12	74.13				No	1	3	7	22	21.8	Y		2016	7	control	N	Died	0	chicks died	5.25	27.98	8.61	-19.37	11-May-16	131		2016	49.34	
+6	263113705	CU2	28	5/8/15	2015	Control	control	0.10	20.02		2.72	33.85	171.26				No	5	5	6	25	18.7	Y		2016	5	predator	N	Died	0	chicks died	0.92	29.61	10.99	-18.62	10-May-16	130		2016	35.98	In some places was written down with different prefix: 2401. The female with 263113705 has brightness of 35.98 and was at unit 2 box 65 in 2016. That female is also in the telomere list at priority = 2.
+82	240150270	CU2	48	5/12/15	2015	Long	cort	1.73	43.34		42.22	87.01					No	3	3	5	21.5	19.75	Y		2016	6	control	N	Fledged	2		3.99	18.2	7.49	-10.71	11-May-16	131		2016	52.40	
+102	240150273	CU2	27	5/11/15	2015	Low	cort	12.46	26.40		8.21	34.84					No	5	6	6	22.5	18.5	Y		2016	5	tape	N	Died	0	predated; only one hatched	2.89	13.94	9.6	-4.34	12-May-16	132		2016	43.22	
+5	240150278	CU2	25	5/13/15	2015	Control	control	1.80	20.53	28.69	2.11	27.49	27.39				No	5	5	6	22.5	20.25	Y		2016	6	control	N	Died	0	chicks died	1.36	22.5	9.28	-13.22	14-May-16	134		2016	36.64	
+83	240151526	CU2	65	5/8/15	2015	Long	cort	9.21	6.24	7.34	57.96	7.38	25.74				No	5	6	6	23	21.8	Y		2016	6	tape	Y	Abandon	0		5.26	23.47	8.42	-15.05	10-May-16	130		2016	31.01	
+57	259122567	CU2	11	5/8/15	2015	High	cort	0.65	22.14	19.25	128.89	12.36	23.52				No	5	6	6	23.7	21.25	Y		2016	6	tape	N	Fledged	4		1.14	52.89	15.2	-37.69	09-May-16	129		2016	44.83	
+59	262125706	CU2	24	5/12/15	2015	High	cort	3.87	40.47	17.70	13.13	116.41					No	4	4	4	19.8	18.25	Y		2016	5	control	N	Died	0	chicks died	4.61	32.99	7.98	-25.01	09-May-16	129		2016		It looks like this one was accidentally missing breast feathers (we have the full record and rump feather measures but no breast metrics).
+61	262125801	CU2	37	5/9/15	2015	High	cort	1.40	33.17		26.87						No	1	6	6	20.25	22	Y		2016	5	tape	N	Died	0	chicks died	0.81	26.08	15.18	-10.9	11-May-16	131		2016	46.85	
+58	262126127	CU2	14	5/7/15	2015	High	cort	8.55	36.33		39.38	35.53					No	4	6	7	21	18.9	Y		2016	5	cort	Y	Died	0		1.3	23.06	11.24	-11.82	26-May-16	146		2016	45.84	
+81	263113706	CU2	34	5/11/15	2015	Long	cort	4.59	20.24		4.92	284.45					No	4	4	4	23	19.75	Y		2016	6	control	Y	Abandon	0	in second clutch; abandoned first after 3d…	3.71	20.5	11.94	-8.56	20-May-16	140		2016	34.59	
+104	263113709	CU2	73	5/8/15	2015	Low	cort	3.11	25.75		12.34	275.17					No	6	6	7	20.5	18	Y		2016	7	cort	N	Died	0	chicks died	2.83	79.74	7.42	-72.32	06-May-16	126		2016	47.15	
+64	263113714	CU2	118	5/13/15	2015	High	cort	4.79	20.13		83.34	20.64					No	2	2	3	19	18.4	Y		2016	6	control	N	Died	0	chicks died	0.85	21.65	13.73	-7.92	09-May-16	129		2016	52.95	
+84	263113715	CU2	111	5/11/15	2015	Long	cort	0.87	53.91		25.45	30.38					No	5	5	6	24	19.8	Y		2016	7	control	N	Fledged	1		2.77	32.53	10.42	-22.11	09-May-16	129		2016	36.81	
+103	263113716	CU2	43	5/12/15	2015	Low	cort	5.52	32.13		22.47	41.88	24.64				No	4	4	5	21.5	19.8	Y		2016	5	tape	N	Died	0	chicks died	1.33	31.37	8.15	-23.22	12-May-16	132		2016	41.76	
+60	263113718	CU2	30	5/13/15	2015	High	cort		31.34	21.77	46.63		154.35				No	4	4	6	20.75	19	Y		2016	6	cort	N	Died	0	chicks died	3.24	40.1	10.37	-29.73	10-May-16	130		2016	40.85	
+34	263113720	CU2	72	5/14/15	2015	DMSO	control	1.58	19.99	21.71	1.10	15.84	5.38				No	4	5	6	22	20.5	Y		2016	6	control	N	Died	0	chicks died	0.47	17.15	10.54	-6.61	09-May-16	129		2016	41.15	
+107	263113722	CU2	122	5/12/15	2015	Low	cort	2.31	21.17	27.53	18.52	48.96					No	3	5	5	20.7	18.5	Y		2016	6	cort	N	Died	0	chicks died	2.74	14.76	14.89	0.13	11-May-16	131		2016	44.39	
+80	263113734	CU2	32	5/28/15	2015	Long	cort	2.62			52.65	20.11					No	1	1	5	21	19	Y		2016	6	control	Y	Abandon	0		0.74	23.06	9.88	-13.18	09-May-16	129		2016	37.13	
+105	263113799	CU2	85	5/10/15	2015	Low	cort	15.22	9.65		42.48	61.05					No	4	4	5	18.5	18.5	Y		2016	6	tape	N	Died	0	chicks died	2.91	53.33	20.3	-33.03	10-May-16	130		2016	50.67	
+106	263113903	CU2	92	6/16/15	2015	Low	cort	4.12	19.31		34.80	102.70					No	1	4	4	20.8	19.4	Y		2016	5	cort	N	Fledged	4		1.1	16.12	9.53	-6.59	12-May-16	132		2016	48.53	In 2015 initiated once as DMSO and abandoned; subsequently made low cort
+79	263114002	CU2	9	6/8/15	2015	Long	cort	2.20			8.69	19.73					No	3	3	4	19.6	19.6	Y		2016	6	tape	N	Fledged	3		2.09	86.34	18.72	-67.62	06-May-16	126		2016	52.57	
+10	156181156	4	104	5/19/16	2016	Control	control	1.24	44.63	8.43	3.56			9.62	28.11	9.6	No	3	5	6			Y	Fledged	2017											19-May-17	139	No cort	2017	35.94	
+125	185146896	2	96	5/15/16	2016	Short Cort	cort	2.15	26.41	10.31	64.33						Yes	0	4	4			Y	Died	2017	4	control	N	Fledged	4		8.27	42.77	9.41	-33.36	16-May-17	136		2017	29.92	
+122	239159871	2	32	5/16/16	2016	Short Cort	cort	1.18	24.77	8.88	27.11			38.58	48.32	27.94	Yes	0	4	6			Y	Died	2017	5	control	N	Fledged	4		10.89	21.55	7.79	-13.76	15-May-17	135		2017	26.80	
+7	240150270	2	21	5/11/16	2016	Control	control	4.41	20.11	8.28	1.60			3.12	24.48	7.99	No	2	3	6			Y	Fledged	2017	6	control	N	Died	5	chicks died	0.47	11.51	10.64	-0.87	12-May-17	132		2016	41.71	
+123	262125520	4	72	5/16/16	2016	Short Cort	cort	1.46	15.17	7.38	18.51			6.61	40.43	15.71	No	4	6	6			Y	Fledged	2017											09-May-17	129	No cort	2018	30.58	
+91	263113706	2	48	5/20/16	2016	Long Cort	cort	5.65	35.13	10.54	10.40			72.42	25.92	11.32	Yes	0	0	3			Y	Abandon	2017	6	control	N	Died	0		5	25.38	8.01	-17.37	08-May-17	128		2017	48.23	
+124	263113709	2	77	5/6/16	2016	Short Cort	cort	3.13	88.08	8.21	89.99			25.12	71.67	17.61	Yes	0	4	7			Y	Died	2018only													No record from 2017	2017		"In a water box in 2018, should have feathers but I don't have them measured/imported yet. Need to check."
+37	263113714	2	75	5/9/16	2016	DMSO	control	0.95	23.92	15.17				2.34	20.16	12.97	Yes	0	5	6			Y	Died	2017							4.67	21.69	10.28	-11.41	11-May-17	131	No cort	2017	51.72	
+11	263113715	2	111	5/9/16	2016	Control	control	3.06	35.94	11.52	1.60			2.58	25.3	5.29	No	1	3	7			Y	Fledged	2017	7	control		Eggs pred	0	eggs missing	3.27	35.36	10.27	-25.09	14-May-17	134		2017	43.95	
+38	263113720	2	103	5/9/16	2016	DMSO	control	0.47	18.94	11.65	1.78			2.42	17.05	6.37	Yes	0	5	6			Y	Died	2017	6										16-May-17	136	No cort	2018	28.63	
+92	263113903	2	126	5/12/16	2016	Long Cort	cort	1.22	17.81	10.54	63.93			52.91	196.6	18.55	No	4	4	5			Y	Fledged	2017													No cort	2017		She was in a water box in 2017 so I don't think we would have gotten feathers from her. Interesting that it looks like she was mist-netted again in 2018 but then wasn't recorded as breeding (though I guess she was probably in one of the water boxes that failed to hatch?).
+8	272107222	4	65	5/18/16	2016	Control	control	2.50	25.62	10.61	2.20						Yes	0	6	6			Y	Died	2018only													No record from 2017	2017		"In a water box in 2018, should have feathers but I don't have them measured/imported yet. Need to check."
+36	272107403	2	59	5/17/16	2016	DMSO	control	2.25	10.99	7.22	6.02			7.5	34.05	10.71	No	3	6	6			Y	Fledged	2017	5	control	N	Fledged	2		6.45	13.11	12.16	-0.95	16-May-17	136		2017	44.14	
+9	272107599	4	97	6/3/16	2016	Control	control	3.35	70.79	12.13	1.89			2.45	38.22	6.23	No	4	4	4			Y	Fledged	2017											20-May-17	140	No cort	2017	49.91	
