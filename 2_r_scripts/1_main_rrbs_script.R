@@ -166,7 +166,7 @@
                     scale_x_continuous(breaks = seq(0, 200000, 40000))
             
             p_e <- ggplot(data = d_bis, mapping = aes(x = (Methylated.CpGs / (Unmethylated.CpGs + Methylated.CpGs)) * 100)) +
-                geom_histogram(fill = "#D55E00", binwidth = 2.5, color = "gray30", alpha = 0.6) + 
+                geom_histogram(fill = "gray75", binwidth = 2.5, color = "gray30", alpha = 0.6) + 
                 theme_classic() + xlab("CpG methylation %") +
                 ylab("Number of samples") +
                 annotate("text", x = -Inf, y = Inf, hjust = -.9, vjust = 1.5, label = "E", size = 6) +
@@ -263,8 +263,8 @@
                 
 # 0. Settings for MethylKit ----
     # Define the groups to be included
-      group_1 <- "C"
-      group_2 <- "F"
+      group_1 <- "A"
+      group_2 <- "D"
       
     # Define colors for plotting teh two groups (group 1 & group 2), see above in 'set colors' section for names
       col1 <- pre_col
@@ -280,7 +280,7 @@
         hi_perc <- 99.5
         
     # Define minimum number of sample per group for CpG to be included in comparison
-        min_p_group <- 6L  # changing to 6 for cross year, at 10 for within year
+        min_p_group <- 6L  # 
         
     # Randomization number of loops (takes a while)
         n_rand <- 10
@@ -1966,3 +1966,43 @@
         
         saveRDS(mc2r_plot, here::here("4_other_output", "mc2r_plot.rds"))
         
+        
+# Supplement plot of treatments ----
+  dx2 <- dx
+  dx2$treat_y1 <- gsub("control", "Control", dx2$treat_y1)
+  dx2$treat_y1 <- gsub("DMSO", "Sham", dx2$treat_y1)
+  dx2$treat_y1 <- gsub("high", "High", dx2$treat_y1)
+  dx2$treat_y1 <- gsub(paste0("\\b", "Long Cort", "\\b"), "Long2", dx2$treat_y1)
+  dx2$treat_y1 <- gsub(paste0("\\b", "Long", "\\b"), "Long1", dx2$treat_y1)
+  dx2$treat_y1 <- gsub("low", "Low", dx2$treat_y1)
+  dx2$treat_y1 <- gsub("Short Cort", "Short", dx2$treat_y1)
+  
+  dx2$treat_y1 <- factor(dx2$treat_y1, levels = c("Control", "Sham", "High", "Long1", "Long2", "Low", "Short"))
+  
+  
+  sf1 <- ggplot(dx2, mapping = aes(x = treat_y1, y = postbase, fill = treatcat_y1)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = 0.2) +
+    theme_rrbs() +
+    guides(fill = FALSE) +
+    xlab("Treatment") +
+    ylab("Post treatment \n base cort (ng/ml)") +
+    annotate("text", x = -Inf, y = Inf, label = "A", hjust = -0.5, vjust = 1.5, size = 6)
+ 
+dx2b <- dx2   
+#dx2b <- subset(dx2, dx2$treat_y1 != "Long2" & dx2$treat_y1 != "Short")  
+for(i in 1:nrow(dx2b)){
+  if(is.na(dx2b$poststress[i]) == TRUE){dx2b$poststress[i] <- dx2b$post2stress[i]}
+}
+
+  sf2 <- ggplot(dx2b, mapping = aes(x = treat_y1, y = poststress, fill = treatcat_y1)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = 0.2) +
+    theme_rrbs() +
+    guides(fill = FALSE) +
+    xlab("Treatment") +
+    ylab("Post treatment \n induced cort (ng/ml)") +
+    annotate("text", x = -Inf, y = Inf, label = "B", hjust = -0.5, vjust = 1.5, size = 6)
+  
+  p_sf12 <- ggpubr::ggarrange(sf1, sf2, nrow = 2)
+  saveRDS(p_sf12, here::here("5_temporary_files", "treat_eff_fig.rds"))
